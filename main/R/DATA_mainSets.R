@@ -130,7 +130,7 @@ subsetNESTS <- function(n, state, sp, d2h) {
   }
 
   if (!missing(d2h) | !is.null(d2h)) {
-    n = n[days_till_hatching <= d2h]
+    n = n[days_till_hatching <= d2h | is.na(days_till_hatching)]
   }
   
   n

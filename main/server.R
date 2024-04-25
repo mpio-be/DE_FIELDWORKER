@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
 #* Database interface
   output$open_db = renderUI({
     
-    startApp("db_ui", "field_db.php?username=nola",
+    startApp("db_ui", "field_db.php",
       isShiny = FALSE,
       host = session$clientData$url_hostname,
       labels = p(icon("database"), "Database interface")
@@ -129,6 +129,16 @@ shinyServer(function(input, output, session) {
                 Did you download all GPS units?")
         )
       }
+
+      n[, N := .N, nest]
+      doubleEntry = n[N > 1]
+      
+      if (nrow(doubleEntry) > 0) {
+        WarnToast(
+          glue("Nests with inconsistent states: {paste( unique(doubleEntry$nest), collapse = ';')} ")
+        )
+      }
+
       n
     }
   })
@@ -137,10 +147,11 @@ shinyServer(function(input, output, session) {
   output$map_nests_show = renderPlot({
 
     n = N()
+    grandN = nrow(n)
     req(n)
     n = subsetNESTS(n, state = input$nest_state, sp = input$nest_species, d2h = input$days_to_hatch)
 
-    map_nests(n,size  = input$nest_size)
+    map_nests(n,size  = input$nest_size, grandTotal = grandN)
     
   })
 
@@ -149,11 +160,13 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       
       n = N()
+      grandN = nrow(n)
+
       req(n)
       n = subsetNESTS(n, state = input$nest_state, sp = input$nest_species, d2h = input$days_to_hatch)
 
       cairo_pdf(file = file, width = 11, height = 8.5)
-      map_nests(n,size  = input$nest_size) |> print()
+      map_nests(n,size  = input$nest_size, grandTotal = grandN) |> print()
       dev.off()
     }
   )

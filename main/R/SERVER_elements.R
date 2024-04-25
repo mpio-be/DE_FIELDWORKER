@@ -18,6 +18,31 @@ ErrToast <- function(msg){
 
 }
 
+WarnToast <- function(msg){
+  toast(
+    
+    title = "Moin!",
+    
+    body = msg |> a(class = "text-primary font-weight-bold") |> h4(),
+        
+    options = list(
+      delay    = 10000,
+      autohide = TRUE,
+      close    = TRUE,
+      position = "bottomRight",
+      icon     = "fa-solid fa-face-sad-tear"
+    )
+  
+  )
+
+
+}
+
+
+
+
+
+
 
 WaitToast <- function(msg) {
   toast(

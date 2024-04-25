@@ -23,7 +23,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
 #' ds = sf::st_as_sf(d, coords = c("lon", "lat"))
 #' mapview::mapview(ds, zcol = "nest")
 #' map_nests(d)
-map_nests <- function(d, size = 2.5) { # state  = "F"
+map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
   
   g = map_empty()
 
@@ -38,8 +38,8 @@ map_nests <- function(d, size = 2.5) { # state  = "F"
     geom_point(data = x, aes(lon, lat, color = last_state), size = size) +
     geom_point(data = x[collected==1], aes(lon, lat), size = size+0.2, shape = 5, inherit.aes = FALSE) +
     geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
-    labs(subtitle = glue("
-    {nrow(x) } nests, {nrow(x[collected == 1])} collected clutches ◈.\n
+    labs(subtitle = glue("{grandTotal} nests, 
+    {nrow(x) } shown, {nrow(x[collected == 1])} collected clutches ◈.\n
     LEGEND: Nest (Last check - days ago), Clutch
     ")) +
     xlab(NULL) + ylab(NULL)
