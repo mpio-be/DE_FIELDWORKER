@@ -22,4 +22,4 @@ The interface in `\main` is both :
 * a landing page that links to the [DataEntry](https://github.com/mpio-be/DataEntry), [gpxui](https://github.com/mpio-be/gpxui) interfaces and some other web apps.     
 * a mapping, viewing and reporting interface.
 
-The interfaces outside of `\main` are self-contained. 
+The interfaces outside of `\main` are self-contained and can be run independently if needed. 
