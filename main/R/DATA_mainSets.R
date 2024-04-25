@@ -85,6 +85,7 @@ NESTS <- function() {
 
   # collected
   e = DBq("select distinct nest from NESTS where nest_state = 'C' ")
+  e[, collected := 1]
 
   # days till hatching
   dth = DBq("SELECT * FROM EGGS ")
@@ -101,11 +102,14 @@ NESTS <- function() {
                    where c.ID is not NULL")
   id = dcast(id, nest ~ sex, value.var = "ID")
 
-  # final set
-  o = merge(n, cs, by = "nest", all.x = TRUE)
-  o = merge(o, e, by = "nest", all.x = TRUE)
+  # prepare final set
+  setnames(n, "nest_state", "last_state")
+  
+  o = merge(n, cs,  by = "nest", all.x = TRUE)
+  o = merge(o, e,   by = "nest", all.x = TRUE)
+  o[is.na(collected), collected := 0]
   o = merge(o, dth, by = "nest", all.x = TRUE)
-  o = merge(o, id, by = "nest", all.x = TRUE)
+  o = merge(o, id,  by = "nest", all.x = TRUE)
 
   o
 }
@@ -118,7 +122,7 @@ subsetNESTS <- function(n, state, sp, d2h) {
   
   # subsets
   if (!missing(state) | !is.null(state)) {
-    n= n[nest_state %in% state]
+    n= n[last_state %in% state]
   }
 
   if (!missing(sp) | !is.null(sp)) {
@@ -126,9 +130,9 @@ subsetNESTS <- function(n, state, sp, d2h) {
   }
 
   if (!missing(d2h) | !is.null(d2h)) {
-    n= n[days_till_hatching <= d2h]
+    n = n[days_till_hatching <= d2h]
   }
-
+  
   n
 
 }

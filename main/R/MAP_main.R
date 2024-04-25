@@ -6,7 +6,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
     theme_minimal() +
     theme(
       panel.border    = element_blank(),
-      panel.grid      = element_line(colour = "#ffffff", size = 0),
+      panel.grid      = element_line(colour = "#ffffff", linewidth = 0),
       panel.spacing   = unit(c(0, 0, 0, 0), "cm"),
       axis.text.x     = element_blank(),
       axis.text.y     = element_blank(), 
@@ -22,13 +22,12 @@ map_empty <- function(x = OsterFeinerMoor ) {
 #' d = NESTS()[species == "NOLA"]
 #' ds = sf::st_as_sf(d, coords = c("lon", "lat"))
 #' mapview::mapview(ds, zcol = "nest")
-#' map_nests(d, state = input$nest_state)
+#' map_nests(d)
 map_nests <- function(d, size = 2.5) { # state  = "F"
   
   g = map_empty()
 
   x = d
-
 
   x[, LAB := glue_data(.SD, "{nest}({lastCheck}),{clutch}", .na = "")] # [{days_till_hatching}]
 
@@ -36,10 +35,11 @@ map_nests <- function(d, size = 2.5) { # state  = "F"
   
   g = 
   g +
-    geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
+    geom_point(data = x, aes(lon, lat, color = last_state), size = size) +
+    geom_point(data = x[collected==1], aes(lon, lat), size = size+0.2, shape = 5, inherit.aes = FALSE) +
     geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
     labs(subtitle = glue("
-    {nrow(x) } nests, {nrow(x[nest_state == 'C'])} collected clutches.\n
+    {nrow(x) } nests, {nrow(x[collected == 1])} collected clutches ◈.\n
     LEGEND: Nest (Last check - days ago), Clutch
     ")) +
     xlab(NULL) + ylab(NULL)

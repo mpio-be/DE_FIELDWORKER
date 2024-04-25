@@ -194,7 +194,7 @@ shinyServer(function(input, output, session) {
       {
       n = N()
       req(n)
-      x = n[, .(nest, lastCheck, nest_state, clutch, days_till_hatching, F, M)]
+      x = n[, .(nest,species,datetime_, lastCheck, last_state, iniClutch,clutch,collected,est_hatch_date, days_till_hatching, F, M)]
       setorder(x, days_till_hatching)
 
       },
