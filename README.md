@@ -5,17 +5,23 @@ __Fieldworker__ is a modular application for organizing fieldwork.
 
 
 ```
-FIELDWORKER/
-├── [DataEntry]
-│   ├── AUTHORS
-│   ├── CAPTURES
-│   ├── EGGS
-│   ├── NESTS
-│   └── RESIGHTINGS
-├── [gpxui]
-└── [main]
-    ├── R
-    └── www
+📦FIELDWORKER
+ ┣ 📂Admin
+ ┃ ┗ 📜db_structure.SQL
+ ┣ 📂DataEntry
+ ┃ ┣ 📂AUTHORS
+ ┃ ┣ 📂CAPTURES
+ ┃ ┣ 📂EGGS
+ ┃ ┣ 📂NESTS
+ ┃ ┗ 📂RESIGHTINGS
+ ┣ 📂gpxui
+ ┃ ┣ 📜global.R
+ ┃ ┣ 📜server.R
+ ┃ ┗ 📜ui.R
+ ┣ 📂main
+ ┃ ┣ 📂R
+ ┃ ┣ 📂www
+
 ```
 
 The interface in `\main` is both :  
