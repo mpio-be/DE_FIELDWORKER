@@ -109,6 +109,7 @@ shinyServer(function(input, output, session) {
   output$AUTHORS_show     = TABLE_show("AUTHORS")      
   output$CAPTURES_show    = TABLE_show("CAPTURES")       
   output$RESIGHTINGS_show = TABLE_show("RESIGHTINGS")       
+  output$CHICKS_show      = TABLE_show("CHICKS")       
   output$NESTS_show       = TABLE_show("NESTS")       
   output$EGGS_show        = TABLE_show("EGGS")       
 

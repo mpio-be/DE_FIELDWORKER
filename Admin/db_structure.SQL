@@ -175,6 +175,26 @@ CREATE TABLE EGGS (
   KEY date (date)
 ) ENGINE=Aria ;
 
+CREATE TABLE CHICKS (
+  
+  date      date               DEFAULT NULL COMMENT 'Date (YYYY-MM-DD).',
+  caught    time               DEFAULT NULL COMMENT 'hh:mm time caught ',
+  released  time               DEFAULT NULL COMMENT 'hh:mm time released',
+  nest      varchar(7)         DEFAULT NULL COMMENT '<kbd>Nest ID</kbd>, see NESTS table',
+  author  varchar(3)           DEFAULT NULL COMMENT 'Initials (see authors file)',
+  ID      varchar(255)         DEFAULT NULL COMMENT 'Metal ring number.',   
+  tarsus  DOUBLE               DEFAULT NULL COMMENT 'Length (mm)',  
+  weight  DOUBLE               DEFAULT NULL COMMENT 'Body mass (g)',
+  sample  varchar(255)         DEFAULT NULL COMMENT 'Comma delimited: F(fecal), C(cloaca_swab), W(blood whole), S(blood smear), P(blood plasma)',
+  comments  varchar(500)       DEFAULT NULL COMMENT 'Comments.',
+
+  nov int(1) unsigned zerofill DEFAULT NULL COMMENT 'No validation. Do not edit !',
+  pk int(10) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (pk),
+  KEY nest (nest),
+  KEY date (date)
+) ENGINE=Aria ;
+
 -- VIEWS
 DROP   VIEW IF EXISTS CAPTURES_summary;
 CREATE VIEW CAPTURES_summary AS 

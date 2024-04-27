@@ -19,6 +19,7 @@
     
     "shinyWidgets",
     "bs4Dash",
+    "DT",
     
     "leaflet",
     "leafem",
@@ -34,8 +35,8 @@
     app_nam              = "FIELDWORKER",
     server               = "nola24",
     db                   = "FIELD_2024_NOLAatDUMMERSEE",
-    dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "NESTS", "EGGS", "AUTHORS"),
-    dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "NESTS", "EGGS", "AUTHORS"),
+    dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS"),
+    dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS"),
     species              = c("NOLA", "REDS"),
     ggrepel.max.overlaps = 20,
     studySiteCenter      = c(x = 8.341151, y = 52.55065)
