@@ -31,26 +31,17 @@
 
 
 #! OPTIONS
-  options(
-    app_nam              = "FIELDWORKER",
-    server               = "nola24",
-    db                   = "FIELD_2024_NOLAatDUMMERSEE",
-    dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS"),
-    dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS"),
-    species              = c("NOLA", "REDS"),
-    ggrepel.max.overlaps = 20,
-    studySiteCenter      = c(x = 8.341151, y = 52.55065)
-  )
+
 
   options(shiny.autoreload = TRUE)
 
   options(dbo.tz = "Europe/Berlin")
 
-
+  source(file.path("..", "config.R"))
 
 #! UI DEFAULTS
   
-  ver                 = "v 0.0.1"
+  ver                 = "v 0.0.2"
   apptitle            = "DÜMMER-SEE"
   pagetitle           = apptitle
   set_capturedDaysAgo = 3
