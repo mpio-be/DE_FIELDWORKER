@@ -29,7 +29,6 @@ The interface in `\main` is both :
 * a mapping, viewing and reporting interface.
 The interfaces outside of `\main` are self-contained and can be run independently if needed. 
 
-
 ### How to install and run. 
 
 1. Clone this repo locally.
