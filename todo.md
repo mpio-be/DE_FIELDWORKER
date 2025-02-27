@@ -6,3 +6,9 @@
   * nest is mandatory only fr location = 'NEST' or 'HAT'
 
 * populate COMBOS table
+
+* EGGS table
+  * dropdown for state, and action
+
+* SAMPLES
+  * editable as full table

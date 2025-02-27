@@ -4,7 +4,7 @@
 CREATE DATABASE IF NOT EXISTS FIELD_2025_NOLAatDUMMERSEE; 
 USE FIELD_2025_NOLAatDUMMERSEE; 
 
-CREATE TABLE AUTHORS (
+CREATE TABLE IF NOT EXISTS AUTHORS (
   Name char(50)                DEFAULT NULL COMMENT 'Your full name.',
   author varchar(3)            DEFAULT NULL COMMENT 'Your initials. Use two or three letters. This is what you will use when entering data.',
   START date                   DEFAULT NULL COMMENT 'Start of work (YYYY-MM-DD)',
@@ -68,22 +68,19 @@ CREATE TABLE CAPTURES (
   KEY gps (gps_id,gps_point)
 ) ENGINE=ARIA;
 
-CREATE TABLE RESIGHTINGS (
+CREATE TABLE IF NOT EXISTS RESIGHTINGS (
   species varchar(50)         DEFAULT NULL COMMENT '4 letter code, e.g. NOLA.',
   author varchar(3)            DEFAULT NULL COMMENT 'Initials of the observer (see authors table).',
   gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID',
   gps_point_start int(3)       DEFAULT NULL COMMENT 'GPS waypoint for the start of the behaviour (required)',
   gps_point_stop int(3)        DEFAULT NULL COMMENT 'GPS waypoint for the stop of the behaviour (optional)',
-  rclass varchar(2)            DEFAULT NULL COMMENT 'Resighting class. "C" (pre-capture), "V" (video session), "R" (regular)',
 
   UL varchar(10)               DEFAULT NULL COMMENT 'color band',
   UR varchar(10)               DEFAULT NULL COMMENT 'color band',
   LL varchar(10)               DEFAULT NULL COMMENT 'color band',
   LR varchar(10)               DEFAULT NULL COMMENT 'color band',
 
-  behaviour TEXT               DEFAULT NULL COMMENT 'description of the behaviour or, when a protocol exist, behavioral class.' ,
-
-  cam_id integer(2) DEFAULT NULL COMMENT 'camera ID',
+  behaviour TEXT               DEFAULT NULL COMMENT 'description of the behaviour' ,
 
   comments varchar(500)        DEFAULT NULL COMMENT 'Comments',
   
@@ -95,7 +92,7 @@ CREATE TABLE RESIGHTINGS (
   KEY gps2 (gps_id,gps_point_stop)
 ) ENGINE=ARIA;
 
-CREATE TABLE GPS_POINTS (
+CREATE TABLE IF NOT EXISTS GPS_POINTS (
   gps_id int(2) NOT NULL        COMMENT 'gps id',
   gps_point int(10) NOT NULL    COMMENT 'gps point',
   datetime_ datetime NOT NULL   COMMENT 'gps date-time (CET)',
@@ -108,7 +105,7 @@ CREATE TABLE GPS_POINTS (
   KEY datetime_ (datetime_)
 ) ENGINE=ARIA;
 
-CREATE TABLE GPS_TRACKS (
+CREATE TABLE IF NOT EXISTS GPS_TRACKS (
   gps_id int(2) NOT NULL        COMMENT 'gps id',
   seg_id int(10) NOT NULL       COMMENT 'segment id',
   seg_point_id int(10) NOT NULL COMMENT 'segment point id',
@@ -122,6 +119,7 @@ CREATE TABLE GPS_TRACKS (
   KEY datetime_ (datetime_)
 ) ENGINE=ARIA;
 
+DROP TABLE IF EXISTS COMBOS;
 CREATE TABLE COMBOS (
   species varchar(50) DEFAULT NULL COMMENT  '4 letter code, e.g. NOLA',
   UL varchar(10)      DEFAULT NULL COMMENT  'Upper left',
@@ -137,7 +135,6 @@ CREATE TABLE COMBOS (
 DROP TABLE IF EXISTS NESTS;
 CREATE TABLE NESTS (
   author varchar(3)            DEFAULT NULL COMMENT 'Initials (see authors file)',
-  species varchar(50)          DEFAULT NULL COMMENT '4 letter code, e.g. NOLA',
   nest varchar(7)              DEFAULT NULL COMMENT 'Nest ID: SXYY, Where S is Species(the first letter of the species name), X=your GPS number, YY=your running nest number',
   nest_state ENUM('F','C','I','pP','pD','H','notA')       DEFAULT NULL COMMENT '<b>F</b> (found), <b>C</b> (collected), <b>I</b> (Incubated, active nest, warm eggs), <b>(p)P</b> [(possibly)Predated], <b>(p)D</b> [(possibly)Deserted, cold eggs], <b>H</b> (hatched, received hatched chicks), <b>notA</b> (not Active, nest marks removed. )',
   
@@ -159,25 +156,29 @@ CREATE TABLE NESTS (
   m_UR varchar(10)             DEFAULT NULL COMMENT 'color band',
   m_LL varchar(10)             DEFAULT NULL COMMENT 'color band',
   m_LR varchar(10)             DEFAULT NULL COMMENT 'color band',
-  behav varchar(50)            DEFAULT NULL COMMENT 'Behaviour of the incubating bird (comma seperated): INC=Incubating, DF=Driving Flight, BW=Distraction Display (e.g. Broken Wing) or O=Other behaviours (describe in comments)',
+  behav varchar(50)            DEFAULT NULL COMMENT 'Behaviour of the incubating bird (comma separated): INC=Incubating, DF=Driving Flight, BW=Distraction Display (e.g. Broken Wing) or O=Other behaviours (describe in comments)',
   comments varchar(500)        DEFAULT NULL COMMENT 'Comments',
   nov int(1) unsigned zerofill DEFAULT NULL COMMENT 'No validation. Do not edit !',
   pk int(10) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (pk),
   KEY nest (nest),
-  KEY species (species),
   KEY gps (gps_id,gps_point)
 ) ENGINE=Aria ;
 
 DROP TABLE IF EXISTS EGGS;
 CREATE TABLE EGGS (
-  species varchar(50)           DEFAULT NULL COMMENT '4 letter code, e.g. NOLA.',
-  location ENUM('F', 'L')       DEFAULT NULL COMMENT 'Indicates if the egg is in the field (F) or in the lab (L).',
-  date date                     DEFAULT NULL COMMENT 'Date (YYYY-MM-DD) when the nest was checked.',
   nest varchar(7)               DEFAULT NULL COMMENT '<kbd>Nest ID</kbd>, see NESTS table',
+  date date                     DEFAULT NULL COMMENT 'Date (YYYY-MM-DD) when the nest was checked.',
+  egg_id int(1)                 DEFAULT NULL COMMENT 'The id of the egg (1-4); only relevant for location = L',  
+  location ENUM('F', 'L')       DEFAULT NULL COMMENT 'Indicates if the egg is in the field (F) or in the lab (L).',
   float_angle int(3)            DEFAULT NULL COMMENT 'Egg floating angle (degrees).',    
   surface int(3)                DEFAULT NULL COMMENT 'Egg surface (mm).',    
   weight DECIMAL(6,2)           DEFAULT NULL COMMENT 'Egg weight in grams.',
+  
+  state  VARCHAR(50)        NULL DEFAULT NULL COMMENT "The state of the egg: normal (checked, nothing found), star, crack, hatched, fertile, broken, dead_embryo, killed, bad.",
+  action VARCHAR(50)        NULL DEFAULT NULL COMMENT "The action performed: in_incubator, in_hatcher, out_hatcher, tissue, blood, delivered.",
+
+  
   comments varchar(500)         DEFAULT NULL COMMENT 'Comments.',
   nov int(1) unsigned zerofill  DEFAULT NULL COMMENT 'No validation. Do not edit !',
   pk int(10) NOT NULL AUTO_INCREMENT,
@@ -208,6 +209,7 @@ CREATE TABLE CHICKS (
   KEY date (date)
 ) ENGINE=Aria ;
 
+DROP TABLE IF EXISTS SAMPLES;
 CREATE TABLE SAMPLES (
   ID VARCHAR(50) NOT NULL,
   date_collect DATE NOT NULL            COMMENT 'Date the sample was collected',
