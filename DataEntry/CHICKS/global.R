@@ -47,7 +47,7 @@
   tableName       = "CHICKS"
   excludeColumns  = c("pk", "nov")
   n_empty_lines   = 20
-  SERVER          = "nola24"
+  SERVER          = "localhost"
   cnf = read.config(getOption("dbo.my.cnf"))[[SERVER]]
   user = cnf$user
   host = cnf$host

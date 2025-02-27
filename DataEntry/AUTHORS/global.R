@@ -43,7 +43,7 @@
 #! PARAMETERS
   tableName       = "AUTHORS"
   n_empty_lines   = 10
-  SERVER          = "nola24"
+  SERVER          = "localhost"
   cnf = read.config(getOption("dbo.my.cnf"))[[SERVER]]
   user = cnf$user
   host = cnf$host
