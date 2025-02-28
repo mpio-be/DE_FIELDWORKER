@@ -55,7 +55,7 @@ body = dashboardBody(
 
     bs4Dash::tabsetPanel(
       id = "tabset",
-      .list = lapply(getOption('dbtabs_view'), function(i) {
+      .list = lapply(dbtabs_view, function(i) {
         tabPanel(
           title = paste0("[", i, "]"),
           active = FALSE,
@@ -84,8 +84,8 @@ body = dashboardBody(
           selectInput(
             inputId = "nest_species", label = "Species:",
             multiple = TRUE,
-            choices = getOption("species"),
-            selected = getOption("species")
+            choices = species,
+            selected = species
           ),
 
           sliderInput(

@@ -2,8 +2,31 @@
   #' list.files('./main/R', full.names = TRUE) |> lapply(source) |> invisible(); source('./main/global.R')
   #' ss = function() shiny::runApp('main', launch.browser = TRUE)
 
+SERVER = "localhost" # dbo::my.cnf()
 
-#! PACKAGES & DATA
+
+#- VARIABLES
+
+  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
+  user = cnf$user
+  host = cnf$host
+  pwd  = cnf$password
+  db   = cnf$database
+
+  app_nam              = "FIELDWORKER"
+  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS")
+  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS")
+  species              = c("NOLA", "REDS")
+  studySiteCenter      = c(x = 8.341151, y = 52.55065)
+
+
+#! OPTIONS
+  options(shiny.autoreload = TRUE)
+  options(dbo.tz = "Europe/Berlin")
+
+
+
+#! PACKAGES & SETTINGS
   sapply(
     c(
     "dbo",
@@ -28,6 +51,8 @@
 
   data(OsterFeinerMoor, package = "wadeR")
 
+  tags = shiny::tags
+
 
 
 #! OPTIONS
@@ -37,7 +62,6 @@
 
   options(dbo.tz = "Europe/Berlin")
 
-  source(file.path("..", "config.R"))
 
 #! UI DEFAULTS
   

@@ -1,7 +1,8 @@
 
-
-
 #' shiny::runApp('./DataEntry/CHICKS', launch.browser =  TRUE)
+
+SERVER = "localhost" # dbo::my.cnf()
+
 
 #! SETTINGS
   sapply(c(
@@ -42,7 +43,6 @@
   }
 
 
-
 #! PARAMETERS
   tableName       = "CHICKS"
   excludeColumns  = c("pk", "nov")
@@ -55,7 +55,7 @@
   db   = cnf$database
 
 
-  # UI elements
+# UI elements
   comments = column_comment(
     user           = user,
     host           = host,

@@ -1,14 +1,47 @@
 
-
-
 #' shiny::runApp('./DataEntry/CAPTURES', launch.browser = TRUE)
 
-#! SETTINGS
-  source(file.path("..", "..", "config.R"))
-  DataEntry_packages()
+SERVER = "localhost" # dbo::my.cnf()
+
+
+# SETTINGS
+  sapply(c(
+    "DataEntry",            # remotes::install_github('mpio-be/DataEntry')
+    "DataEntry.validation", # remotes::install_github('mpio-be/DataEntry.validation')
+    "shinyjs", 
+    "shinyWidgets",
+    "shinytoastr",
+    "tableHTML", 
+    "glue", 
+    "stringr", 
+    "beR",
+    "dbo"
+  ), require, character.only = TRUE, quietly = TRUE)
+
+
+#! PARAMETERS
+  tableName       = "CAPTURES"
+  excludeColumns  = c("pk", "nov")
+  n_empty_lines = 10
+  
+  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
+  user = cnf$user
+  host = cnf$host
+  pwd  = cnf$password
+  db   = cnf$database
+
   tags = shiny::tags
 
 #* FUNCTIONS
+    DBq <- function(x) {
+    con <- dbo::dbcon(server = SERVER, db = db)
+    on.exit(DBI::dbDisconnect(con))
+
+    o <- DBI::dbGetQuery(con, x)
+    setDT(o)
+    o
+  }
+
   
   describeTable <- function() {
     x <- DBq("SELECT ID, CAST( CONCAT_WS(' ', `date`,released) AS DATETIME) datetime_ FROM CAPTURES WHERE ID is not NULL
@@ -21,14 +54,7 @@
     )
   }
 
-
-
-#! PARAMETERS
-  tableName       = "CAPTURES"
-  excludeColumns  = c("pk", "nov")
-  n_empty_lines   = 10
-
-  # UI elements
+# UI elements
   comments = column_comment(
     user           = user,
     host           = host,

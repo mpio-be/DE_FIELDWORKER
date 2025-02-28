@@ -27,9 +27,9 @@ shinyServer(function(input, output, session) {
 #* ENTER DATA
   output$new_data = renderUI({
 
-    startApp(getOption("app_nam"), "DataEntry", getOption("dbtabs_entry"),
+    startApp(app_nam, "DataEntry", dbtabs_entry,
       host = session$clientData$url_hostname,
-      labels = paste(icon("pencil"), getOption("dbtabs_entry"))
+      labels = paste(icon("pencil"), dbtabs_entry)
     )
   
   })
@@ -37,7 +37,7 @@ shinyServer(function(input, output, session) {
 #* GPS
   output$open_gps = renderUI({
 
-    startApp(getOption("app_nam"), "gpxui",
+    startApp(app_nam, "gpxui",
       host = session$clientData$url_hostname,
       labels = p(icon("location-crosshairs"), "GPS upload/download")
     )
@@ -56,7 +56,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$dbdump = downloadHandler(
-    filename = paste0(getOption("db"), ".zip"),
+    filename = paste0(db, ".zip"),
     content = function(file) {
       
       dbTxtDump(zipfile = file)
@@ -105,7 +105,7 @@ shinyServer(function(input, output, session) {
     )
   }
  
-  # crosscheck with getOption('dbtabs_view')
+  # crosscheck with dbtabs_view
   output$AUTHORS_show     = TABLE_show("AUTHORS")      
   output$CAPTURES_show    = TABLE_show("CAPTURES")       
   output$RESIGHTINGS_show = TABLE_show("RESIGHTINGS")       

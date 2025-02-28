@@ -1,7 +1,9 @@
 
 
-
 #' shiny::runApp('./DataEntry/RESIGHTINGS', launch.browser = TRUE)
+
+SERVER = "localhost" # dbo::my.cnf()
+
 
 #! SETTINGS
   sapply(c(
@@ -46,7 +48,6 @@
   tableName = "RESIGHTINGS"
   excludeColumns  = c("pk", "nov")
   n_empty_lines   = 10
-  SERVER          = "localhost"
   cnf = read.config(getOption("dbo.my.cnf"))[[SERVER]]
   user = cnf$user
   host = cnf$host

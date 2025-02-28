@@ -3,13 +3,42 @@
 
 #' shiny::runApp('./DataEntry/AUTHORS', launch.browser = TRUE, port = 1234)
 
+SERVER = "localhost" # dbo::my.cnf()
 
-#! SETTINGS
-  source('file.path("..", "..", "config.R")')
-  DataEntry_packages()
+# SETTINGS
+  sapply(c(
+    "DataEntry",            # remotes::install_github('mpio-be/DataEntry')
+    "DataEntry.validation", # remotes::install_github('mpio-be/DataEntry.validation')
+    "shinyjs", 
+    "shinyWidgets",
+    "shinytoastr",
+    "tableHTML", 
+    "glue", 
+    "stringr", 
+    "beR",
+    "dbo"
+  ), require, character.only = TRUE, quietly = TRUE)
+
+
+#- VARIABLES
+  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
+  user = cnf$user
+  host = cnf$host
+  pwd  = cnf$password
+  db   = cnf$database
+
   tags = shiny::tags
 
 #* FUNCTIONS
+    DBq <- function(x) {
+    con <- dbo::dbcon(server = SERVER, db = db)
+    on.exit(DBI::dbDisconnect(con))
+
+    o <- DBI::dbGetQuery(con, x)
+    setDT(o)
+    o
+  }
+  
   describeTable <- function() {
     x <- DBq("SELECT * FROM AUTHORS")
 
