@@ -4,7 +4,7 @@ dashboardPage(
     color = "#b8c7c5"
   ),
   dark = FALSE,
-  title = paste("FIELDWORKER", year(Sys.Date())),
+  title = paste(app_nam, year(Sys.Date())),
   
   header = dashboardHeader(
     title = dashboardBrand(

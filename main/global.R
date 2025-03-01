@@ -5,26 +5,6 @@
 SERVER = "localhost" # dbo::my.cnf()
 
 
-#- VARIABLES
-
-  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
-  user = cnf$user
-  host = cnf$host
-  pwd  = cnf$password
-  db   = cnf$database
-
-  app_nam              = "FIELDWORKER"
-  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
-  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
-  species              = c("NOLA", "REDS")
-  studySiteCenter      = c(x = 8.341151, y = 52.55065)
-
-
-#! OPTIONS
-  options(shiny.autoreload = TRUE)
-  options(dbo.tz = "Europe/Berlin")
-
-
 #! PACKAGES & SETTINGS
   sapply(
     c(
@@ -52,13 +32,23 @@ SERVER = "localhost" # dbo::my.cnf()
 
   tags = shiny::tags
 
+#- VARIABLES
+
+  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
+  user = cnf$user
+  host = cnf$host
+  pwd  = cnf$password
+  db   = cnf$database
+
+  app_nam              = "DE_FIELDWORKER"
+  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
+  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
+  species              = c("NOLA", "REDS")
+  studySiteCenter      = c(x = 8.341151, y = 52.55065)
 
 
 #! OPTIONS
-
-
   options(shiny.autoreload = TRUE)
-
   options(dbo.tz = "Europe/Berlin")
 
 
