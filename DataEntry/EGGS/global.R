@@ -75,8 +75,7 @@ SERVER = "localhost" # dbo::my.cnf()
     excludeColumns = excludeColumns,
     n              = n_empty_lines, 
     preFilled = list(
-      date = format(Sys.Date(), "%Y-%m-%d"),
-      species = "NOLA" #,
+      date = format(Sys.Date(), "%Y-%m-%d")
       # UL   = "M", 
       # UR   = "W"
     )
