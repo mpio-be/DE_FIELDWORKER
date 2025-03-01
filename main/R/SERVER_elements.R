@@ -38,12 +38,6 @@ WarnToast <- function(msg){
 
 }
 
-
-
-
-
-
-
 WaitToast <- function(msg) {
   toast(
     title = NULL,
@@ -59,14 +53,6 @@ WaitToast <- function(msg) {
     )
   )
 }
-
-
-
-
-
-
-
-
 
 # the last element of ...  can have length > 1
 startApp <- function(..., labels, host, isShiny = TRUE, class = "primary") {

@@ -14,8 +14,8 @@ SERVER = "localhost" # dbo::my.cnf()
   db   = cnf$database
 
   app_nam              = "FIELDWORKER"
-  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS")
-  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS")
+  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
+  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
   species              = c("NOLA", "REDS")
   studySiteCenter      = c(x = 8.341151, y = 52.55065)
 
@@ -23,7 +23,6 @@ SERVER = "localhost" # dbo::my.cnf()
 #! OPTIONS
   options(shiny.autoreload = TRUE)
   options(dbo.tz = "Europe/Berlin")
-
 
 
 #! PACKAGES & SETTINGS

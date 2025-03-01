@@ -59,9 +59,14 @@ RESIGHTINGS <- function() {
 #' n = NESTS()
 NESTS <- function() {
   # last state
-  n = DBq('SELECT nest, species, max(CONCAT_WS(" ",date,time_appr)) datetime_, nest_state
+  n = DBq('SELECT nest, max(CONCAT_WS(" ",date,time_appr)) datetime_, nest_state
                         FROM NESTS
-                          GROUP BY species, nest, nest_state')
+                          GROUP BY nest, nest_state')
+  n[, species := fcase(
+    str_starts(nest, "L"), "NOLA",
+    str_starts(nest, "R"), "REDS",
+    default = NA_character_
+    )]
 
   setorder(n, nest)
   n[, lastd := max(datetime_), by = .(nest)]
