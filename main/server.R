@@ -1,7 +1,7 @@
 shinyServer(function(input, output, session) {
 
 # For debugging purposes only (assign input values to global environment)
-  observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
+  # observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
 # Control bar: clock and hard drive status
   output$clock <- renderUI({
@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
           dbtable_is_updated(table_nam)
         },
         valueFunc = function() {
-          DBq(glue("select * FROM {table_nam}"))[, ":="(pk = NULL, nov = NULL)] %>% data.frame()
+          DBq(glue("select * FROM {table_nam}"))[, ":="(pk = NULL, nov = NULL)] 
         }
       )
       get_data()
@@ -80,7 +80,7 @@ shinyServer(function(input, output, session) {
     )
   }
   
-# Create outputs for various tables
+
   output$AUTHORS_show     <- TABLE_show("AUTHORS")
   output$CAPTURES_show    <- TABLE_show("CAPTURES")
   output$RESIGHTINGS_show <- TABLE_show("RESIGHTINGS")
@@ -88,6 +88,7 @@ shinyServer(function(input, output, session) {
   output$NESTS_show       <- TABLE_show("NESTS")
   output$EGGS_show        <- TABLE_show("EGGS")
   output$SAMPLES_show     <- TABLE_show("SAMPLES")
+  output$COMBOS_show      <- TABLE_show("COMBOS")
   
 # Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
@@ -144,9 +145,9 @@ shinyServer(function(input, output, session) {
       req(n)
       n <- st_as_sf(n[!is.na(lat)], coords = c("lon", "lat"), crs = 4326)
       if (nrow(n) > 0) {
-        leafletProxy(mapId = "nest_dynmap_show") %>%
-          clearMarkers() %>%
-          clearShapes() %>%
+        leafletProxy(mapId = "nest_dynmap_show") |>
+          clearMarkers() |>
+          clearShapes() |>
           addCircleMarkers(
             data        = n,
             fillOpacity = 0.5,
@@ -172,8 +173,8 @@ shinyServer(function(input, output, session) {
   options       = list(
     dom         = "Blfrtip",
     buttons     = list("copy", list(
-      extend = "collection",
-      buttons = c("excel", "pdf"),
+      extend    = "collection",
+      buttons   = c("excel", "pdf"),
       text = "Download"
     )),
     scrollX     = "600px",

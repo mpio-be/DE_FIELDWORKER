@@ -1,4 +1,4 @@
-dashboardPage(
+bs4Dash::dashboardPage(
   preloader = list(
     html = waiter::spin_loaders(id = 16, color = "#01125f"), 
     color = "#b8c7c5"

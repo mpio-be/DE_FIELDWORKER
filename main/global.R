@@ -41,8 +41,8 @@ SERVER = "localhost" # dbo::my.cnf()
   db   = cnf$database
 
   app_nam              = "DE_FIELDWORKER"
-  dbtabs_entry         = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
-  dbtabs_view          = c("CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "AUTHORS", "SAMPLES")
+  dbtabs_entry         = c("AUTHORS", "CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "SAMPLES")
+  dbtabs_view          = c("AUTHORS", "CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "SAMPLES", "COMBOS")
   species              = c("NOLA", "REDS")
   studySiteCenter      = c(x = 8.341151, y = 52.55065)
 
