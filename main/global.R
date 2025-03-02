@@ -2,7 +2,7 @@
   #' list.files('./main/R', full.names = TRUE) |> lapply(source) |> invisible(); source('./main/global.R')
   #' ss = function() shiny::runApp('main', launch.browser = TRUE)
 
-SERVER = "localhost" # dbo::my.cnf()
+SERVER = "de_fieldworker" # dbo::my.cnf()
 
 
 #! PACKAGES & SETTINGS

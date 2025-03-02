@@ -3,7 +3,7 @@
 
 #' shiny::runApp('./DataEntry/AUTHORS', launch.browser = TRUE, port = 1234)
 
-SERVER = "localhost" # dbo::my.cnf()
+SERVER = "de_fieldworker" # dbo::my.cnf()
 
 # SETTINGS
   sapply(c(

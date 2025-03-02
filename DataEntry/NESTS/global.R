@@ -1,7 +1,7 @@
 
 #' shiny::runApp('./DataEntry/NESTS', launch.browser =  TRUE)
 
-SERVER = "localhost" # dbo::my.cnf()
+SERVER = "de_fieldworker" # dbo::my.cnf()
 
 
 #! SETTINGS
