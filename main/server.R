@@ -204,7 +204,7 @@ shinyServer(function(input, output, session) {
     pred[, date_ := as.Date(input$refdate) + value]
     pred[, value := round(value, 1)]
     pred[, variable := factor(variable,
-      labels = c("Most probable [average]", "Ealiest [95%CI-low]", "Latest [95%CI-high]")
+      labels = c("Most likely [average]", "Earliest [95%CI-low]", "Latest [95%CI-high]")
     )]
     setnames(pred, c("", "Days to hatch", "Hatching date"))
 
