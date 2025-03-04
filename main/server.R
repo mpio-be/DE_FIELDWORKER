@@ -194,19 +194,25 @@ shinyServer(function(input, output, session) {
 
     h = readRDS("./data/gam_float_to_hach.rds")
 
-    pred = 
-    ggeffects::ggpredict(h, terms = c(
-      glue("egg_float_angle [{input$float_angle}]"),
-      glue("egg_float_height [{input$float_height}]")
-    ))
+    pred =
+      ggeffects::ggpredict(h, terms = c(
+        glue("egg_float_angle [{input$float_angle}]"),
+        glue("egg_float_height [{input$float_height}]")
+      )) |> data.table()
+    pred = pred[, .(predicted, conf.low, conf.high)]
+    pred = melt(pred, measure.vars = names(pred))
+    pred[, date_ := as.Date(input$refdate) + value]
+    pred[, value := round(value, 1)]
+    pred[, variable := factor(variable,
+      labels = c("Most probable [average]", "Ealiest [95%CI-low]", "Latest [95%CI-high]")
+    )]
+    setnames(pred, c("", "Days to hatch", "Hatching date"))
 
-    gp = 
-    ggplot(data.frame(pred), aes(x = x, y = predicted)) +
-      geom_point() +   
-      geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 2)  
-      theme_minimal() +
-      labs(x = "X", y = "Predicted Value", title = "Days to hatch")
-
+    gtab = ggpubr::ggtexttable(pred,
+      rows = NULL,
+      theme =  ggpubr::ttheme(base_size = 18)
+    )
+      
 
 
     g1 =
@@ -221,7 +227,7 @@ shinyServer(function(input, output, session) {
       geom_smooth(method = "loess", span = 1.0) +
       geom_vline(aes(xintercept = input$float_height))
     
-    g1 + g2 + plot_layout(axes ='collect')
+    gtab / (g1 + g2 ) + plot_layout(axes = "collect",heights = c(1,2) )
 
 
 
