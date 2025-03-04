@@ -51,8 +51,6 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 
 #! PARAMETERS
   tableName       = "AUTHORS"
-  n_empty_lines   = 10
-  
 
 
   # UI elements
@@ -63,17 +61,3 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     pwd            = pwd,
     table          = tableName
   )
-
-  uitable = 
-    emptyFrame(   
-    user           = user,
-    host           = host,
-    db             = db,
-    pwd            = pwd,
-    table          = tableName,
-    n              = n_empty_lines
-
-    ) |> 
-    rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>
-      hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>
-      hot_rows(fixedRowsTop = 1) 

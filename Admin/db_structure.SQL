@@ -29,7 +29,7 @@ CREATE TABLE CAPTURES (
   gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID (1-12)',
   gps_point int(4)             DEFAULT NULL COMMENT 'Waypoint number of the capture location',
   
-  sex_observed char(1)         DEFAULT NULL COMMENT 'The observed sex',
+  sex_observed ENUM('M','F','U')         DEFAULT NULL COMMENT 'The observed sex: <kbd>F</kbd>(female),<kbd>M</kbd>(male),<kbd>U</kbd>(unknown)',
   ID varchar(255)              DEFAULT NULL COMMENT 'Metal ring number.',
   UL varchar(10)               DEFAULT NULL COMMENT 'color band',
   UR varchar(10)               DEFAULT NULL COMMENT 'color band',
@@ -139,6 +139,9 @@ CREATE TABLE NESTS (
   
   hatch_state varchar(50) DEFAULT NULL COMMENT 'No. of eggs(1-4) followed by egg state (N-no sign, S-star, C-crack,CC-multiple or a big crack). <br> E.g. 4N, 2N2S, 1N1S1C1CC ',
   
+  bird_inc ENUM('M','F','U','E') DEFAULT NULL COMMENT ' M(male), F(female), U(unknown), E(nest empty, no one seen)', 
+
+
   gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID',
   gps_point int(3)             DEFAULT NULL COMMENT 'GPS waypoint (if nest_state is F this is the position of the nest, otherwise this is the escape distance)',
   date date                    DEFAULT NULL COMMENT 'Date (YYYY-MM-DD) when the nest was checked.',
@@ -174,7 +177,7 @@ CREATE TABLE EGGS (
   surface int(3)                DEFAULT NULL COMMENT 'Egg surface (mm).',    
   weight DECIMAL(6,2)           DEFAULT NULL COMMENT 'Egg weight in grams.',
   
-  state  VARCHAR(50)        NULL DEFAULT NULL COMMENT "The state of the egg: normal (checked, nothing found), star, crack, hatched, fertile, broken, dead_embryo, killed, bad.",
+  state  VARCHAR(50)        NULL DEFAULT NULL COMMENT "The state of the egg: normal (checked, nothing found), star, crack, hatched, fertile, broken, dead_embryo, killed",
   action VARCHAR(50)        NULL DEFAULT NULL COMMENT "The action performed: in_incubator, in_hatcher, out_hatcher, tissue, blood, delivered.",
 
   

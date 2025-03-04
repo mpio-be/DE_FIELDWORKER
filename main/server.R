@@ -1,7 +1,7 @@
 shinyServer(function(input, output, session) {
 
 # For debugging purposes only (assign input values to global environment)
-  # observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
+  observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
 # Control bar: clock and hard drive status
   output$clock <- renderUI({
@@ -186,5 +186,50 @@ shinyServer(function(input, output, session) {
   ),
   class = c("compact", "stripe", "order-column", "hover")
   )
-  
+
+# HATCHING
+  output$hatching_est_plot <- renderPlot({
+    
+    require(mgcv)     
+
+    h = readRDS("./data/gam_float_to_hach.rds")
+
+    pred = 
+    ggeffects::ggpredict(h, terms = c(
+      glue("egg_float_angle [{input$float_angle}]"),
+      glue("egg_float_height [{input$float_height}]")
+    ))
+
+    gp = 
+    ggplot(data.frame(pred), aes(x = x, y = predicted)) +
+      geom_point() +   
+      geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 2)  
+      theme_minimal() +
+      labs(x = "X", y = "Predicted Value", title = "Days to hatch")
+
+
+
+    g1 =
+      ggplot(h$model, aes(x = egg_float_angle, y = days_to_hatch)) +
+      ggbeeswarm::geom_beeswarm(alpha = 0.5) +
+      geom_smooth() +
+      geom_vline(aes(xintercept = input$float_angle)) 
+
+    g2 =
+      ggplot(h$model, aes(x = egg_float_height, y = days_to_hatch)) +
+      ggbeeswarm::geom_beeswarm(alpha = 0.5) +
+      geom_smooth(method = "loess", span = 1.0) +
+      geom_vline(aes(xintercept = input$float_height))
+    
+    g1 + g2 + plot_layout(axes ='collect')
+
+
+
+    
+    })
+
+
+
+session$allowReconnect(TRUE)
+
 })

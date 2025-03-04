@@ -82,4 +82,24 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     ) |> 
     rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>
       hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>
-      hot_rows(fixedRowsTop = 1) 
+
+    hot_col(
+      col    = "nest_state", 
+      type   = "autocomplete",
+      source = c("F", "C", "I", "P", "pP", "D", "pD", "H", "notA"), 
+      strict = TRUE
+    ) |>
+    hot_col(
+      col    = "bird_inc", 
+      type   = "autocomplete",
+      source = c('M','F','U','E'), 
+      strict = TRUE
+    ) |>
+    hot_col(
+      col    = "behav", 
+      type   = "autocomplete",
+      source = c("INC", "DF", "BW", "O"), 
+      strict = TRUE
+    ) |>
+
+    hot_rows(fixedRowsTop = 1) 

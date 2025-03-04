@@ -50,12 +50,6 @@ list(
 
 
 
-
-# TODO REINFORCE VALUES: comma delimited entries
-# beh <- c("AC", "TF", "VF", "OF", "FI", "PS", "GS", "C", "For", "R", "PR", "DD", "INC", "O")
-
-
-
 # COMBO should exist in CAPTURES
   {
     z <- x[, .(UL, LL, UR, LR, rowid)]
@@ -65,6 +59,7 @@ list(
     is.element_validator(z,
       v = data.table(
         variable = "combo",
+        # TODO: add 2024
         set = list(DBq("SELECT UL,LL, UR, LR FROM CAPTURES") |> make_combo() )
         ), 
       reason = "combo does not exist in CAPTURES. "

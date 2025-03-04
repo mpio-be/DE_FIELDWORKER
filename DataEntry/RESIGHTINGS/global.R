@@ -74,8 +74,8 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     table          = tableName,
     excludeColumns = excludeColumns,
     n              = n_empty_lines,
-    preFilled      = list(species = "NOLA") # TODO
-    # preFilled      = list(UL = "M", UR = "W") # TODO
+    preFilled      = list(species = "NOLA") 
+    # preFilled      = list(UL = "M", UR = "W") 
     ) |> 
     rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>
       hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>

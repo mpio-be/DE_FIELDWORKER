@@ -65,21 +65,41 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     excludeColumns = excludeColumns
   )
 
-  uitable = 
-    emptyFrame(   
-    user           = user,
-    host           = host,
-    db             = db,
-    pwd            = pwd,
-    table          = tableName,
-    excludeColumns = excludeColumns,
-    n              = n_empty_lines, 
-    preFilled = list(
-      date = format(Sys.Date(), "%Y-%m-%d")
-      # UL   = "M", 
-      # UR   = "W"
-    )
-    ) |> 
+  uitable =
+    emptyFrame(
+      user = user,
+      host = host,
+      db = db,
+      pwd = pwd,
+      table = tableName,
+      excludeColumns = excludeColumns,
+      n = n_empty_lines,
+      preFilled = list(
+        date = format(Sys.Date(), "%Y-%m-%d")
+        # UL   = "M",
+        # UR   = "W"
+      )
+    ) |>
     rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>
-      hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>
-      hot_rows(fixedRowsTop = 1) 
+    hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>
+    hot_col(
+      col    = "location",
+      type   = "autocomplete",
+      source = c("N", "F", "H"),
+      strict = TRUE
+    ) |>
+    hot_col(
+      col    = "state",
+      type   = "autocomplete",
+      source = c("normal", "star", "crack", "hatched", "fertile", "broken", "dead_embryo", "killed"),
+      strict = TRUE
+    ) |>
+    
+    hot_col(
+      col    = "action", 
+      type   = "autocomplete",
+      source = c('in_incubator', 'in_hatcher', 'out_hatcher', 'tissue', 'blood', 'delivered') , 
+      strict = TRUE
+    ) |>
+
+    hot_rows(fixedRowsTop = 1)

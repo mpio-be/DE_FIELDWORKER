@@ -17,23 +17,34 @@ bs4Dash::dashboardPage(
     collapsed = TRUE,
     sidebarMenu(
       id = "main",  # Assigning an id here allows input$main to be set
-      menuItem("News", tabName = "news", icon = icon("newspaper")),
+      menuItem("Start",         tabName = "start",         icon = icon("circle-play")),
       menuItem("GPS",           tabName = "gps",           icon = icon("location-arrow")),
       menuItem("Enter Data",    tabName = "enter_data",    icon = icon("edit")),
       menuItem("Database",      tabName = "database",      icon = icon("database")),
       menuItem("View Data",     tabName = "view_data",     icon = icon("table")),
       menuItem("Nests Map",     tabName = "nests_map",     icon = icon("map")),
       menuItem("Live Nest Map", tabName = "live_nest_map", icon = icon("broadcast-tower")),
-      menuItem("To-Do",         tabName = "todo",          icon = icon("tasks"))
+      menuItem("To-Do",         tabName = "todo",          icon = icon("tasks")),
+      menuItem("Hatching",      tabName = "hatching_est",  icon = icon("egg"))
     )
   ),
   
   body = dashboardBody(
     tabItems(
-      # News tab
+      # Start tab
       tabItem(
-        tabName = "news",
-        includeMarkdown("./www/help/news.md")
+        tabName = "start",
+        
+        fluidRow(
+          box(title = 'Info',icon = icon("rss"), width = 10,
+            includeMarkdown("./www/help/news.md")
+          ), 
+
+          box(title = 'Settings',icon = icon("gears"),width = 2,
+            dateInput(inputId = 'refdate', 'Reference date')
+          )
+        )
+      
       ),
       # GPS tab
       tabItem(
@@ -47,7 +58,7 @@ bs4Dash::dashboardPage(
           uiOutput("new_data"),
           hr(),
           includeMarkdown("./www/help/enter_data.md")
-    ),
+      ),
       # DB tab
       tabItem(
         tabName = "database",
@@ -111,7 +122,7 @@ bs4Dash::dashboardPage(
               ),
               downloadBttn(outputId = "map_nests_pdf", label = "PDF map")
             ),
-            shiny::tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
+            tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
             plotOutput('map_nests_show')
           )
         )
@@ -123,7 +134,7 @@ bs4Dash::dashboardPage(
           box(
             width = 12,
             maximizable = TRUE,
-            shiny::tags$style(type = "text/css", "#nest_dynmap_show {height: calc(95vh - 1px) !important;}"),
+            tags$style(type = "text/css", "#nest_dynmap_show {height: calc(95vh - 1px) !important;}"),
             leafletOutput(outputId = "nest_dynmap_show")
           )
         )
@@ -132,7 +143,27 @@ bs4Dash::dashboardPage(
       tabItem(
         tabName = "todo",
         DT::DTOutput(outputId = "nests_overview")
+      ), 
+
+      # Hatching tab
+      tabItem(
+        tabName = "hatching_est",
+
+        fluidRow(
+          box(title = 'Enter flotation',icon = icon("gears"), width = 2,
+            sliderInput('float_angle', 'Angle:', value = 50, min = 19, max = 90,step = 1),
+            sliderInput('float_height', 'Height:',value = 2, min = 0, max = 6,step = 1)
+          ), 
+
+          box( icon = icon("gears"), width = 10,
+            plotOutput(outputId = "hatching_est_plot")
+          )
+        )
+
       )
+
+
+
     )
   ),
   

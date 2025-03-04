@@ -15,7 +15,7 @@ x[ , rowid := .I]
 
 list(
 # Mandatory values
-  x[, .(date, form_id,  gps_id, gps_point, ID, recapture, weight, rowid)] |>
+  x[, .(species, date, cap_start, caught, released, capture_meth, form_id, author, ID, UL, UR, LL, LR, recapture, tarsus, culmen, total_head, wing, weight, wt_w_tag, sex_observed, rowid)] |>
   is.na_validator() |> try_validator(nam = 1)
   ,
 
@@ -24,7 +24,7 @@ list(
     try_validator(nam = 2)
   ,
 
-  x[, .(gps_id, gps_point, rowid)] |>
+  x[is.na(nest), .(gps_id, gps_point, rowid)] |>
     is.na_validator() |>
     try_validator(nam = 'gps')
   ,
@@ -37,18 +37,21 @@ list(
 ,
 # Reinforce values (from existing db tables or lists)
 {
-  z = x[, .(tag_action, recapture)]
+  z = x[, .(capture_meth, tag_action, tag_type, sex_observed, recapture)]
 
   v <- data.table(
     variable = names(z),
     set = c(
-      list(c("on", "off")),
-      list(c(1, 0))
+      list(c("T", "M", "O")), # capture_meth
+      list(c("on", "off")),   # tag_action
+      list(c("D", "G")),   # tag_type
+      list(c("F", "M", "U")),   # sex_observed
+      list(c(1, 0))           # recapture 
     )
   )
 
     is.element_validator(z, v)
-  } |> try_validator(nam = 4)
+  } |> try_validator(nam = "fixed vals")
   ,
 
   x[, .(author, rowid)] |>
@@ -68,21 +71,42 @@ list(
      reason = "GPS ID not in use") |> try_validator(nam = 6)
   ,
 
+# time order
+  x[cap_start >= caught, .(rowid, variable = "cap_start,caught", reason = 'cap_start >= caught')]
+  ,
+
+  x[caught >= released, .(rowid, variable = "caught,released", reason = 'caught >= released')]
+  ,
+
 # morphometrics
-  # TODO
-  x[, .(culmen, total_head, tarsus, wing, weight, rowid)] |>
+  x[sex_observed == 'F', .(culmen, total_head, tarsus, wing, weight, rowid)] |>
   interval_validator(
     v = fread("    
-        variable   lq   uq
-          culmen   20   34  
-      total_head   57   66
-          tarsus   43   70
-            wing   209  239
-          weight   191  270"),
-    reason = "Measurement out of the typical range."
-  )|> try_validator(nam = 9)
-  
-,
+      variable      lq     uq
+        tarsus   43.76  56.81
+        culmen   21.66  44.18
+    total_head   57.76  69.51
+          crest  36.00  79.00
+          wing  201.00 237.00
+        weight  174.30 269.10"),
+    reason = "Female measurement out of the typical range."
+  )|> try_validator(nam = 'female morphometrics')
+  , 
+
+  x[sex_observed == 'M', .(culmen, total_head, tarsus, wing, weight, rowid)] |>
+  interval_validator(
+    v = fread("    
+      variable      lq     uq
+        tarsus   42.64  87.85
+        culmen   20.89  26.49
+    total_head   57.17  63.70
+          crest  69.00 117.00
+          wing  218.00 242.00
+        weight  187.90 241.30"),
+    reason = "Male measurement out of the typical range."
+  )|> try_validator(nam = 'male morphometrics')
+  , 
+
 # Values should be UNIQUE within their containing table
   x[recapture == 0 & !is.na(ID), .(ID, rowid)] |>
   is.duplicate_validator(

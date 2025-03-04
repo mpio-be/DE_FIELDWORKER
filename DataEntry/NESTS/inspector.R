@@ -1,15 +1,14 @@
 
-# TODO
 
 #' source("./DataEntry/NESTS/global.R")
 #' source("./DataEntry/NESTS/inspector.R")
 #'
 #' dat = DBq('SELECT * FROM NESTS')
+#' dat = dbq(q = 'SELECT * FROM NESTS', db = 'FIELD_2024_NOLAatDUMMERSEE', server = SERVER)
+#' dat[, bird_inc := NA]
 #' class(dat) = c(class(dat), 'NESTS')
 #' ii = inspector(dat)
 #' evalidators(ii)
-
-
 
 
 inspector.NESTS <- function(dat, ...){  
@@ -20,7 +19,7 @@ x[, rowid := .I]
 
 list(
 # Mandatory values
-  x[, .(author,species,nest,nest_state,date,time_appr,clutch_size, rowid)] |>
+  x[, .(author,nest,nest_state,date,time_appr,clutch_size, rowid)] |>
     is.na_validator()
   ,
   x[nest_state == 'F', .(gps_id,gps_point, rowid)] |>
@@ -34,14 +33,14 @@ list(
 
 # Reinforce values (from existing db tables or lists)
   {
-  z = x[, .(species, nest_state, behav)]
+  z = x[, .(nest_state,bird_inc, behav)]
 
   v <- data.table(
     variable = names(z),
     set = c(
-      list( c("NOLA")  ), 
-      list( c("F", "C", "I", "P", "pP", "D", "pD", "H", "notA")  ), 
-      list( c("INC", "DF", "BW", "O")  )
+      list( c("F", "C", "I", "P", "pP", "D", "pD", "H", "notA")  ),  # nest_state
+      list( c('M','F','U','E')  ), # bird_inc
+      list( c("INC", "DF", "BW", "O")  ) # behav
     )
   )
 
@@ -63,7 +62,7 @@ list(
       variable = "gps_id",
       set = list(1:20) ,
       reason = "GPS ID not in use"
-    )) |> try_validator(nam = "val2")
+    )) |> try_validator(nam = "gps exists")
   ,
 
   x[nest_state != "F", .(nest, rowid)] |>
@@ -105,7 +104,7 @@ list(
     )
   }
   ,
-  # NEST should be valid TODO
+
   
 
 # Values should be within given intervals

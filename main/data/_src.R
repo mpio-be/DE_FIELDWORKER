@@ -6,16 +6,27 @@
   'patchwork', 'ggplot2', 'ggbeeswarm'),
   require, character.only = TRUE, quietly = TRUE)
 
-
-# NESTS
+# EXTRACT VALIDATION VARIABLES
+  # morphometrics
+  # adults
   x = dbq(
-    q = 'SELECT * FROM NESTS where species = "NOLA" and nest_state = "F"', 
+    q  = 'SELECT ID, sex_observed, tarsus,culmen,total_head,crest,wing,weight FROM CAPTURES where species = "NOLA" and sex_observed <>"U"',
     db = "FIELD_2024_NOLAatDUMMERSEE"
-  )
+  ) |> melt(id.vars = c("ID", "sex_observed"))
+  
+  o = x[!is.na(value), .(lq = min(value), uq = max(value)), .(variable, sex = sex_observed)]
+  setorder(o, sex)
+  
+  x = dbq(
+    q  = 'SELECT ID, tarsus,weight FROM CHICKS',
+    db = "FIELD_2024_NOLAatDUMMERSEE"
+  ) |> melt(id.vars = "ID" )
+  
+  x[!is.na(value), .(lq = quantile(value, probs = 0.05), uq = quantile(value,probs = 0.95)), .(variable )]
 
-  g1 =
-    ggplot(x, aes(x = date)) +
-    geom_histogram()
+
+  
+
 
 # HATCH DATE ESTIMATION
   x = dbq(

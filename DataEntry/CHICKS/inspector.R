@@ -63,9 +63,9 @@ list(
   x[, .(tarsus, weight, rowid)] |>
   interval_validator(
     v = fread("    
-        variable   lq   uq
-          tarsus   23   30
-          weight   13   20"),
+        variable   lq    uq
+          tarsus   22    28
+          weight   14    20"),
     reason = "Measurement out of the typical range."
   )|> try_validator(nam = "morph")
 
