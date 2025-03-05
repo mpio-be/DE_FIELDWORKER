@@ -18,7 +18,7 @@ x[, rowid := .I]
 list(
 
 # Mandatory values
-  x[, .(author, gps_id, gps_point_start, UL, UR, LR, rclass, behaviour, rowid)] |>
+  x[, .(author, gps_id, gps_point_start, UL, UR, LR, behaviour, rowid)] |>
   is.na_validator()
 ,
 # Reinforce values (from existing db tables or lists)
@@ -39,16 +39,6 @@ list(
       reason = "GPS ID not in use"
     ))
   ,
-
-  x[, .(rclass, rowid)] |>
-    is.element_validator(v = data.table(
-      variable = "rclass",
-      set = list(c("R", "C", "V")),
-      reason = "invalid entry."
-    ))
-  ,
-
-
 
 # COMBO should exist in CAPTURES
   {
