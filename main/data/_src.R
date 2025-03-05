@@ -70,10 +70,10 @@
   
   saveRDS(fm, "./main/data/gam_float_to_hach.rds")
 
-  # MINIMUM PREDICTED (95 lower CI) HATCHING DATE
-    pp = cbind(x[cls %in% c(1,3)], predict(fm, newdata = x[cls %in% c(1,3)], se.fit = TRUE) |> data.frame() )
-    pp[, min_days_to_hatch := fit -  qnorm(0.975) * se.fit]
-    pp[, predicted_hatch_date := found_datetime + min_days_to_hatch * 60 * 60 * 24]
-    pp[, diff_to_pred := difftime(predicted_hatch_date, hatching_datetime, units = "days") |> round(1)]
-    pp[!is.na(predicted_hatch_date), .(nest, cls,hatching_datetime, predicted_hatch_date, diff_to_pred)]
-    median(pp$diff_to_pred, na.rm = TRUE)
+# LAST SEASON DATASETS (used as reference)
+  x = dbq(q = 'SELECT nest,found_datetime,latit,longit FROM BREEDING where species = "NOLA" ', 
+    db = "FIELD_2024_NOLAatDUMMERSEE"
+    )
+  xs = st_as_sf(x, coords = c("longit", "latit"), crs = 4326)
+
+  saveRDS(xs, "./main/data/last_season_nests.rds")  

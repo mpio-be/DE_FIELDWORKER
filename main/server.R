@@ -1,6 +1,6 @@
 shinyServer(function(input, output, session) {
 
-# For debugging purposes only (assign input values to global environment)
+# For debugging only (assign input values to global environment)
   observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
 # Control bar: clock and hard drive status
@@ -134,11 +134,11 @@ shinyServer(function(input, output, session) {
     }
   )
   
-# DYNAMIC NESTS MAP: Initialize with a base leaflet map
-  leafmap <- leaflet_map(x = studySiteCenter[1], y = studySiteCenter[2])
+# DYNAMIC NESTS MAP: 
+  leafmap <- leaflet_map()
   output$nest_dynmap_show <- renderLeaflet(leafmap)
   
-# Update dynamic map only when the "live_nest_map" tab is active
+  # Update dynamic map only when the "live_nest_map" tab is active
   observeEvent(input$main, {
     if (input$main == "live_nest_map") {
       n <- N()
@@ -210,7 +210,7 @@ shinyServer(function(input, output, session) {
 
     gtab = ggpubr::ggtexttable(pred,
       rows = NULL,
-      theme =  ggpubr::ttheme(base_size = 18)
+      theme =  ggpubr::ttheme(base_size = 12)
     )
       
 
@@ -219,15 +219,17 @@ shinyServer(function(input, output, session) {
       ggplot(h$model, aes(x = egg_float_angle, y = days_to_hatch)) +
       ggbeeswarm::geom_beeswarm(alpha = 0.5) +
       geom_smooth() +
-      geom_vline(aes(xintercept = input$float_angle)) 
+      geom_vline(aes(xintercept = input$float_angle), color = '#df4306') +
+      theme_minimal(base_size = 12)
 
     g2 =
       ggplot(h$model, aes(x = egg_float_height, y = days_to_hatch)) +
       ggbeeswarm::geom_beeswarm(alpha = 0.5) +
       geom_smooth(method = "loess", span = 1.0) +
-      geom_vline(aes(xintercept = input$float_height))
+      geom_vline(aes(xintercept = input$float_height), color = '#df4306') +
+      theme_minimal(base_size = 12)
     
-    gtab / (g1 + g2 ) + plot_layout(axes = "collect",heights = c(1,2) )
+    gtab / (g1 + g2 ) + plot_layout(axes = "collect",heights = c(1,2) ) 
 
 
 

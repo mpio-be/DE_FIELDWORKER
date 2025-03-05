@@ -81,4 +81,12 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     ) |> 
     rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>
       hot_cols(columnSorting = FALSE, manualColumnResize = TRUE) |>
+
+      hot_col(
+        col    = "location",
+        type   = "autocomplete",
+        source = c("N", "F", "H"),
+        strict = TRUE
+      ) |>
+
       hot_rows(fixedRowsTop = 1) 

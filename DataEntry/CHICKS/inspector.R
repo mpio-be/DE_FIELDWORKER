@@ -23,6 +23,10 @@ list(
     is.na_validator()
 ,
 
+  x[location == 'N', .(author,nest,date,ID, rowid)] |>
+    is.na_validator('nest is required for location = N')
+,
+
 # Re-inforce formats
   x[, .(date, rowid)] |> POSIXct_validator()
 ,

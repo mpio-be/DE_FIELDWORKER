@@ -59,5 +59,3 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   pagetitle           = apptitle
   set_capturedDaysAgo = 3
   set_seenDaysAgo     = 3
-
- 

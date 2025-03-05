@@ -85,7 +85,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     hot_col(
       col    = "location",
       type   = "autocomplete",
-      source = c("N", "F", "H"),
+      source = c("F", "L"),
       strict = TRUE
     ) |>
     hot_col(

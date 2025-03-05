@@ -135,7 +135,22 @@ bs4Dash::dashboardPage(
             width = 12,
             maximizable = TRUE,
             tags$style(type = "text/css", "#nest_dynmap_show {height: calc(95vh - 1px) !important;}"),
-            leafletOutput(outputId = "nest_dynmap_show")
+            leafletOutput(outputId = "nest_dynmap_show"),
+            
+            sidebar = boxSidebar(
+              id = "live_nest_map_controls",
+               width = 25,
+              startOpen = TRUE, 
+
+              checkboxInput(
+                "live_nest_map_show_past_nests", 
+                "Show last season's nests", 
+                value = TRUE)
+
+            )
+          
+          
+          
           )
         )
       ),
@@ -155,7 +170,7 @@ bs4Dash::dashboardPage(
             sliderInput('float_height', 'Height:',value = 2, min = 0, max = 6,step = 1)
           ), 
 
-          box( icon = icon("gears"), width = 10,
+          box(width = 8,
             plotOutput(outputId = "hatching_est_plot")
           )
         )
