@@ -1,4 +1,5 @@
 bs4Dash::dashboardPage(
+  help = NULL,
   preloader = list(
     html = waiter::spin_loaders(id = 16, color = "#01125f"), 
     color = "#b8c7c5"
@@ -134,8 +135,8 @@ bs4Dash::dashboardPage(
           box(
             width = 12,
             maximizable = TRUE,
-            tags$style(type = "text/css", "#nest_dynmap_show {height: calc(95vh - 1px) !important;}"),
-            leafletOutput(outputId = "nest_dynmap_show"),
+            
+            leafletOutput(outputId = "nest_dynmap_show",width = "100%", height = "calc(99vh - 1px)"),
             
             sidebar = boxSidebar(
               id = "live_nest_map_controls",

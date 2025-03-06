@@ -20,7 +20,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 
 #! Options
   options(shiny.autoreload = TRUE)
-  options(shiny.maxRequestSize = 20 * 1024^2)
+  options(shiny.maxRequestSize = 20 * 1024^3)
   options(dbo.tz = "CET")
 
 #* Variables
