@@ -124,7 +124,11 @@ bs4Dash::dashboardPage(
               downloadBttn(outputId = "map_nests_pdf", label = "PDF map")
             ),
             tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
-            plotOutput('map_nests_show')
+            
+            spinner(
+              plotOutput("map_nests_show")
+            )
+          
           )
         )
       ),
@@ -136,7 +140,9 @@ bs4Dash::dashboardPage(
             width = 12,
             maximizable = TRUE,
             
-            leafletOutput(outputId = "nest_dynmap_show",width = "100%", height = "calc(99vh - 1px)"),
+            spinner(
+            leafletOutput(outputId = "nest_dynmap_show",width = "100%", height = "calc(99vh - 1px)") 
+            ),
             
             sidebar = boxSidebar(
               id = "live_nest_map_controls",
@@ -158,7 +164,11 @@ bs4Dash::dashboardPage(
       # To-Do tab
       tabItem(
         tabName = "todo",
-        DT::DTOutput(outputId = "nests_overview")
+        spinner(
+        DT::DTOutput(outputId = "nests_overview") 
+        )
+
+
       ), 
 
       # Hatching tab
@@ -172,7 +182,9 @@ bs4Dash::dashboardPage(
           ), 
 
           box(width = 8,
-            plotOutput(outputId = "hatching_est_plot")
+            spinner(
+              plotOutput(outputId = "hatching_est_plot") 
+              )
           )
         )
 

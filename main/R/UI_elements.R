@@ -26,3 +26,12 @@ select_combo_list <- function() {
   DBq("SELECT DISTINCT UL, LL, UR, LR FROM CAPTURES where tagID is not NULL") |>
     make_combo(short = "LR")
 }
+
+
+spinner <- function(x) {
+
+  shinycssloaders::withSpinner(x, 
+  image = 'animated_ICO.png',
+  image.width = "100cqw")
+
+}

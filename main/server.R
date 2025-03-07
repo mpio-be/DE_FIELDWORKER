@@ -93,7 +93,7 @@ shinyServer(function(input, output, session) {
 # Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
     if (input$main %in% c("nests_map", "live_nest_map", "todo")) {
-      WaitToast("Processing nests...")
+     
       n <- NESTS()
       nolat <- n[is.na(lat)]
       if (nrow(nolat) > 0) {

@@ -1,6 +1,6 @@
 
 ErrToast <- function(msg){
-  toast(
+  bs4Dash::toast(
     
     title = "Moin!",
     
@@ -19,7 +19,7 @@ ErrToast <- function(msg){
 }
 
 WarnToast <- function(msg){
-  toast(
+  bs4Dash::toast(
     
     title = "Moin!",
     
@@ -38,21 +38,7 @@ WarnToast <- function(msg){
 
 }
 
-WaitToast <- function(msg) {
-  toast(
-    title = NULL,
-    body = paste('<i class="fa-solid fa-hourglass-start"></i>', msg) |>
-          HTML() |>
-          h5()  ,
-    options = list(
-      autohide = TRUE,
-      close    = FALSE,
-      fade     = TRUE,
-      delay    = 6000, 
-      position = "topRight"
-    )
-  )
-}
+
 
 # the last element of ...  can have length > 1
 startApp <- function(..., labels, host, isShiny = TRUE, class = "primary") {
