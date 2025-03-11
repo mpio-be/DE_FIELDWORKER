@@ -1,6 +1,6 @@
 
-DBq <- function(x) {
-  con = dbo::dbcon(server = SERVER, db = db)
+DBq <- function(x, .db = db, .SERVER = SERVER) {
+  con = dbo::dbcon(server = .SERVER, db = .db)
   on.exit(DBI::dbDisconnect(con))
 
   o <- try(DBI::dbGetQuery(con, x), silent = TRUE)

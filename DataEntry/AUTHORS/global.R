@@ -53,6 +53,8 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   tableName       = "AUTHORS"
 
 
+  backupdir = paste0('~/backup_', db)
+
   # UI elements
   comments = column_comment(
     user           = user,

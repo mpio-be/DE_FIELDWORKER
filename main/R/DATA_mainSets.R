@@ -29,44 +29,44 @@ CAPTURES <- function() {
 
 #' x = RESIGHTINGS()
 RESIGHTINGS <- function() {
-  x = DBq('SELECT r.UR, r.UL, r.LR, r.LL, lat, lon, datetime_ - interval 8  hour  datetime_  from
+  x = DBq("SELECT r.UR, r.UL, r.LR, r.LL, lat, lon, datetime_ - interval 8  hour  datetime_  from
               GPS_POINTS g
               JOIN
                   RESIGHTINGS r ON
                       g.gps_id = r.gps_id AND g.gps_point = r.gps_point_start
-                  ')
+                  ")
   x[!is.na(LL), LR := LL]
   x[, combo := make_combo(.SD, short = "LR")][, ":="(UL = NULL, LL = NULL, UR = NULL, LR = NULL)]
 
   cc = DBq("SELECT distinct UL,LL,UR,LR,tagID FROM CAPTURES")
   cc[!is.na(LL), LR := LL]
-  cc[, combo :=  make_combo(.SD, short = "LR")]
+  cc[, combo := make_combo(.SD, short = "LR")]
   cc[, ":="(UL = NULL, LL = NULL, UR = NULL, LR = NULL)]
-  
+
   x = merge(x, cc, by = "combo", allow.cartesian = TRUE)
 
 
-  x[,lastSeen := max(datetime_), by = .(combo) ]
+  x[, lastSeen := max(datetime_), by = .(combo)]
   x = x[lastSeen == datetime_]
 
   x[, seenDaysAgo := difftime(Sys.time(), lastSeen, units = "days") |> as.numeric() |> round(1)]
 
 
   colbyID(x)
-
 }
 
 #' n = NESTS()
-NESTS <- function() {
+#' n = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")
+#' 
+NESTS <- function(DB, .refdate) {
+  
+    x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
+  
+  
   # last state
-  n = DBq('SELECT nest, max(CONCAT_WS(" ",date,time_appr)) datetime_, nest_state
-                        FROM NESTS
-                          GROUP BY nest, nest_state')
-  n[, species := fcase(
-    str_starts(nest, "L"), "NOLA",
-    str_starts(nest, "R"), "REDS",
-    default = NA_character_
-    )]
+  
+
+
 
   setorder(n, nest)
   n[, lastd := max(datetime_), by = .(nest)]
@@ -82,7 +82,7 @@ NESTS <- function() {
   g = g[, .(lat = mean(lat), lon = mean(lon), datetime_found = min(datetime_found)), .(nest)]
 
   n = merge(n, g, by = c("nest"), all.x = TRUE)
-  n[, datetime_found := as.POSIXct(datetime_found)]
+  n[, datetime_found := as.POSIXct(datetime_found
   n[, firstCheck := difftime(Sys.time(), datetime_found, units = "days") |> as.numeric() |> round(1)]
 
   # clutch size
@@ -130,9 +130,6 @@ subsetNESTS <- function(n, state, sp, d2h) {
     n= n[last_state %in% state]
   }
 
-  if (!missing(sp) | !is.null(sp)) {
-    n= n[species %in% sp]
-  }
 
   if (!missing(d2h) | !is.null(d2h)) {
     n = n[days_till_hatching <= d2h | is.na(days_till_hatching)]
