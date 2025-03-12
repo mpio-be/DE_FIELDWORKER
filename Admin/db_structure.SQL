@@ -137,16 +137,14 @@ CREATE TABLE NESTS (
   time_appr time               DEFAULT NULL COMMENT 'Time (HH:MM) when the nest was checked.',
   clutch_size int(1)           DEFAULT NULL COMMENT 'Clutch size (number of eggs in the nest excluding hatched chicks)',
   brood_size int(1)            DEFAULT NULL COMMENT 'Number of hatched chicks',
-  female_ID int(10)            DEFAULT NULL COMMENT 'Metal ID of incubating female (this is entered once the COMBO of the female 1s 100% sure (e.g. confirmed twice independently))',
-  male_ID int(10)              DEFAULT NULL COMMENT 'Metal ID of incubating male (this is entered once the COMBO of the male 1s 100% sure (e.g. confirmed twice independently))',
-  f_UL varchar(10)             DEFAULT NULL COMMENT 'color band',
-  f_UR varchar(10)             DEFAULT NULL COMMENT 'color band',
-  f_LL varchar(10)             DEFAULT NULL COMMENT 'color band',
-  f_LR varchar(10)             DEFAULT NULL COMMENT 'color band',
-  m_UL varchar(10)             DEFAULT NULL COMMENT 'color band',
-  m_UR varchar(10)             DEFAULT NULL COMMENT 'color band',
-  m_LL varchar(10)             DEFAULT NULL COMMENT 'color band',
-  m_LR varchar(10)             DEFAULT NULL COMMENT 'color band',
+  f_UL varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  f_UR varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  f_LL varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  f_LR varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  m_UL varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  m_UR varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  m_LL varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
+  m_LR varchar(10)             DEFAULT NULL COMMENT 'color band, only enter during nest checks not at capture time!',
   behav varchar(50)            DEFAULT NULL COMMENT 'Behaviour of the incubating bird (comma separated): INC=Incubating, DF=Driving Flight, BW=Distraction Display (e.g. Broken Wing) or O=Other behaviours (describe in comments)',
   comments varchar(500)        DEFAULT NULL COMMENT 'Comments',
   nov int(1) unsigned zerofill DEFAULT NULL COMMENT 'No validation. Do not edit !',
@@ -214,26 +212,6 @@ CREATE TABLE SAMPLES (
 
 
 
--- VIEWS
-DROP   VIEW IF EXISTS CAPTURES_summary;
-CREATE VIEW CAPTURES_summary AS 
-  SELECT 
-  CAST( CONCAT_WS(' ', date, released) AS DATETIME) datetime_, 
-  tagID, 
-  UL, LL, UR, LR, 
-  recapture, 
-  pk
-  FROM CAPTURES
-   WHERE ID not in (SELECT ID FROM CAPTURES where dead = 1)
-  ;
-
-DROP   VIEW IF EXISTS nest_locations;
-
-CREATE VIEW nest_locations AS 
-SELECT DISTINCT nest, lat, lon from NESTS n join `GPS_POINTS` g on n.gps_id = g.gps_id AND n.gps_point = g.gps_point;
-
-
-
 -- COMBOS
   DROP TABLE IF EXISTS COMBOS;
   CREATE TABLE COMBOS (
@@ -253,8 +231,54 @@ SELECT DISTINCT nest, lat, lon from NESTS n join `GPS_POINTS` g on n.gps_id = g.
   UPDATE COMBOS SET LR = 'M';
 
 
+-- CAPTURES_ARCHIVE
 
-  CREATE VIEW ALL_COMBOS AS
-  SELECT UL, LL, UR, LR, 2025 year FROM FIELD_2025_NOLAatDUMMERSEE.COMBOS
-  UNION
-  SELECT UL, LL, UR, LR, 2024 year FROM FIELD_2024_NOLAatDUMMERSEE.COMBOS;
+
+DROP TABLE IF EXISTS CAPTURES_ARCHIVE;
+CREATE TABLE CAPTURES_ARCHIVE (
+  date date                    DEFAULT NULL COMMENT 'Date caught YYYY-MM-DD',
+  sex_observed ENUM('M','F','U')         DEFAULT NULL COMMENT 'The observed sex: <kbd>F</kbd>(female),<kbd>M</kbd>(male),<kbd>U</kbd>(unknown)',
+  crest DOUBLE                 DEFAULT NULL COMMENT 'Length (mm)',
+  ID varchar(255)              DEFAULT NULL COMMENT 'Metal ring number.',
+  UL varchar(10)               DEFAULT NULL COMMENT 'color band',
+  UR varchar(10)               DEFAULT NULL COMMENT 'color band',
+  LL varchar(10)               DEFAULT NULL COMMENT 'color band',
+  LR varchar(10)               DEFAULT NULL COMMENT 'color band',
+  tagID varchar(10)            DEFAULT NULL COMMENT  'tagID',
+  tagType varchar(10)          DEFAULT NULL COMMENT  'D (druid), G (Global messenger)',
+
+  KEY ID (ID),
+  KEY tagID (tagID),
+  KEY COMBO (UL,LL,UR,LR)) 
+  ENGINE=ARIA;
+
+
+  INSERT INTO CAPTURES_ARCHIVE 
+      (date, sex_observed, crest, ID, UL, UR, LL, LR, tagID, tagType)
+  SELECT 
+      date,
+      sex_observed,
+      crest,
+      ID,
+      UL,
+      UR,
+      LL,
+      LR,
+      tagID,
+      'D' as tagType
+  FROM FIELD_2024_NOLAatDUMMERSEE.CAPTURES;
+
+
+-- VIEWS
+
+  DROP   VIEW IF EXISTS nest_locations;
+
+  CREATE VIEW nest_locations AS 
+  SELECT DISTINCT nest, lat, lon from NESTS n join `GPS_POINTS` g on n.gps_id = g.gps_id AND n.gps_point = g.gps_point;
+
+
+  DROP   VIEW IF EXISTS CAPTURES_ALL;
+  CREATE VIEW CAPTURES_ALL AS 
+    SELECT * FROM CAPTURES_ARCHIVE UNION
+    SELECT date, sex_observed, crest, ID, UL, UR, LL, LR, tagID, tagType FROM CAPTURES
+    ;

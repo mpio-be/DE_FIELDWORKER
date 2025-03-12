@@ -81,14 +81,15 @@ shinyServer(function(input, output, session) {
   }
   
 
-  output$AUTHORS_show     <- TABLE_show("AUTHORS")
-  output$CAPTURES_show    <- TABLE_show("CAPTURES")
-  output$RESIGHTINGS_show <- TABLE_show("RESIGHTINGS")
-  output$CHICKS_show      <- TABLE_show("CHICKS")
-  output$NESTS_show       <- TABLE_show("NESTS")
-  output$EGGS_show        <- TABLE_show("EGGS")
-  output$SAMPLES_show     <- TABLE_show("SAMPLES")
-  output$COMBOS_show      <- TABLE_show("COMBOS")
+  output$AUTHORS_show             <- TABLE_show("AUTHORS")
+  output$CAPTURES_show            <- TABLE_show("CAPTURES")
+  output$CAPTURES_ARCHIVE_show    <- TABLE_show("CAPTURES_ARCHIVE")
+  output$RESIGHTINGS_show         <- TABLE_show("RESIGHTINGS")
+  output$CHICKS_show              <- TABLE_show("CHICKS")
+  output$NESTS_show               <- TABLE_show("NESTS")
+  output$EGGS_show                <- TABLE_show("EGGS")
+  output$SAMPLES_show             <- TABLE_show("SAMPLES")
+  output$COMBOS_show              <- TABLE_show("COMBOS")
   
 # Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({

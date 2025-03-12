@@ -18,7 +18,7 @@ x[, rowid := .I]
 list(
 
 # Mandatory values
-  x[, .(author, gps_id, gps_point_start, UL, UR, LR, behaviour, rowid)] |>
+  x[, .(author, gps_id, gps_point_start,behaviour, rowid)] |>
   is.na_validator()
 ,
 # Reinforce values (from existing db tables or lists)
@@ -49,10 +49,10 @@ list(
     is.element_validator(z,
       v = data.table(
         variable = "combo",
-        # TODO: add 2024
-        set = list(DBq("SELECT UL,LL, UR, LR FROM CAPTURES") |> make_combo() )
+
+        set = list(DBq("SELECT UL,LL, UR, LR FROM CAPTURES_ALL") |> make_combo() )
         ), 
-      reason = "combo does not exist in CAPTURES. "
+      reason = "combo does not exist in CAPTURES (this or last seasons). "
       
       )
   }
