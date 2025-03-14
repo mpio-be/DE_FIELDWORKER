@@ -118,7 +118,7 @@ shinyServer(function(input, output, session) {
     n <- N()
     req(n)
     grandN <- nrow(n)
-    n <- subsetNESTS(n, state = input$nest_state, sp = input$nest_species, d2h = input$days_to_hatch)
+    n <- subsetNESTS(n, state = input$nest_state, d2h = input$days_to_hatch)
     map_nests(n, size = input$nest_size, grandTotal = grandN)
   })
   
@@ -128,7 +128,7 @@ shinyServer(function(input, output, session) {
       n <- N()
       req(n)
       grandN <- nrow(n)
-      n <- subsetNESTS(n, state = input$nest_state, sp = input$nest_species, d2h = input$days_to_hatch)
+      n <- subsetNESTS(n, state = input$nest_state, d2h = input$days_to_hatch)
       cairo_pdf(file = file, width = 11, height = 8.5)
       print(map_nests(n, size = input$nest_size, grandTotal = grandN))
       dev.off()

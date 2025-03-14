@@ -94,12 +94,6 @@ bs4Dash::dashboardPage(
                 label = "Text and symbol size:",
                 min = 1, max = 7, step = 0.2, value = 3
               ),
-              selectInput(
-                inputId = "nest_species", label = "Species:",
-                multiple = TRUE,
-                choices = species,
-                selected = species
-              ),
               sliderInput(
                 inputId = "days_to_hatch",
                 label = "Days till hatching",

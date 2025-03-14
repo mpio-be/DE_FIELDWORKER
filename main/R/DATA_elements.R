@@ -88,3 +88,24 @@ hatching_table <- function() {
 
 
 }
+
+#' x = DBq("SELECT * FROM EGGS", .db = 'FIELD_2024_NOLAatDUMMERSEE')
+#' 
+#' 
+hatching_prediction <- function(x, .gampath = "./data/gam_float_to_hach.rds") {
+
+  require(mgcv)
+  fm = readRDS(.gampath)
+
+  pp = predict(fm, newdata = x, se.fit = TRUE) |>
+    data.frame() |>
+    data.table()
+  pp[, let(conf.low = fit - 1.96 * se.fit, conf.high = fit + 1.96 * se.fit)]
+  setnames(pp, "fit", "predicted")
+
+  pp = pp[, .(predicted, conf.low, conf.high)]
+
+  cbind(x[,.(nest, date)], pp)
+
+
+}

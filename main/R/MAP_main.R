@@ -19,7 +19,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
 
 
 #' d = NESTS()
-#' d = NESTS()[species == "NOLA"]
+#' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
 #' ds = sf::st_as_sf(d, coords = c("lon", "lat"))
 #' mapview::mapview(ds, zcol = "nest")
 #' map_nests(d)
@@ -28,14 +28,15 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
   g = map_empty()
 
   x = d
+  x[, nest := str_remove(nest, "^L")]
 
-  x[, LAB := glue_data(.SD, "{nest}({lastCheck}),{clutch}", .na = "")] # [{days_till_hatching}]
+  x[, LAB := glue_data(.SD, "{nest}({lastCheck}),{last_clutch}", .na = "")] # [{days_till_hatching}]
 
   if(nrow(x) > 0)
   
   g = 
   g +
-    geom_point(data = x, aes(lon, lat, color = last_state), size = size) +
+    geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
     geom_point(data = x[collected==1], aes(lon, lat), size = size+0.2, shape = 5, inherit.aes = FALSE) +
     geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
     labs(subtitle = glue("{grandTotal} nests, 

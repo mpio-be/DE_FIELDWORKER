@@ -1,6 +1,6 @@
 #+ NOTE:
-  #' list.files('./main/R', full.names = TRUE) |> lapply(source) |> invisible(); source('./main/global.R')
-  #' ss = function() shiny::runApp('main', launch.browser = TRUE)
+  #' list.files('./R', full.names = TRUE) |> lapply(source) |> invisible(); source('global.R')
+  #' ss = function() shiny::runApp(launch.browser = TRUE)
 
 SERVER = "de_fieldworker" # dbo::my.cnf()
 

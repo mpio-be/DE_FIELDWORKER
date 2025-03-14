@@ -128,11 +128,11 @@ CREATE TABLE NESTS (
   
   hatch_state varchar(50) DEFAULT NULL COMMENT 'No. of eggs(1-4) followed by egg state (N-no sign, S-star, C-crack,CC-multiple or a big crack). <br> E.g. 4N, 2N2S, 1N1S1C1CC ',
   
-  bird_inc ENUM('M','F','U','E') DEFAULT NULL COMMENT ' M(male), F(female), U(unknown), E(nest empty, no one seen)', 
+  bird_inc ENUM('M','F','U','E') DEFAULT NULL COMMENT ' M(male), F(female), U(unknown), E(nest empty, no one seen); this is usually done from the distance', 
+  
 
-
-  gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID',
-  gps_point int(3)             DEFAULT NULL COMMENT 'GPS waypoint (if nest_state is F this is the position of the nest, otherwise this is the escape distance)',
+  gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID (recorded when nest is found)',
+  gps_point int(3)             DEFAULT NULL COMMENT 'GPS waypoint (recorded when nest is found)',
   date date                    DEFAULT NULL COMMENT 'Date (YYYY-MM-DD) when the nest was checked.',
   time_appr time               DEFAULT NULL COMMENT 'Time (HH:MM) when the nest was checked.',
   clutch_size int(1)           DEFAULT NULL COMMENT 'Clutch size (number of eggs in the nest excluding hatched chicks)',

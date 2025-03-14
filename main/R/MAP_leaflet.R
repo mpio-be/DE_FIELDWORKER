@@ -2,8 +2,8 @@
 
 leaflet_map <- function(x = studySiteCenter[1], y = studySiteCenter[2]){
   
-  lsn = readRDS("./data/last_season_nests.rds")
-  lsn$nest = str_remove(lsn$nest, '^L')
+  lsn = NESTS_last_seasons()
+
   
   leaflet(
     options = leafletOptions(zoomControl = TRUE)
@@ -35,6 +35,8 @@ leaflet_map <- function(x = studySiteCenter[1], y = studySiteCenter[2]){
   addCircleMarkers(
     group = "last season nests",
     data = lsn,
+    lng = ~ longit, 
+    lat = ~ latit,
     label = ~nest,
     radius = 5, 
     fillColor = "#03175a", 
