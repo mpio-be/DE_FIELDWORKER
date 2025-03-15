@@ -75,8 +75,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
       n = n_empty_lines,
       preFilled = list(
         date = format(Sys.Date(), "%Y-%m-%d"),
-        species = "NOLA",
-        LR   = "M"
+        species = "NOLA"
       )
     ) |>
     rhandsontable(afterGetColHeader = js_hot_tippy_header(comments, "description")) |>

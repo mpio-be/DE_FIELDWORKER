@@ -130,6 +130,8 @@ CREATE TABLE NESTS (
   
   bird_inc ENUM('M','F','U','E') DEFAULT NULL COMMENT ' M(male), F(female), U(unknown), E(nest empty, no one seen); this is usually done from the distance', 
   
+  trap_on ENUM('Y') DEFAULT NULL COMMENT 'Was a trap installed on the nest? Y (yes) or leave blank.', 
+  
 
   gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID (recorded when nest is found)',
   gps_point int(3)             DEFAULT NULL COMMENT 'GPS waypoint (recorded when nest is found)',
@@ -211,7 +213,6 @@ CREATE TABLE SAMPLES (
 ) ENGINE=Aria;
 
 
-
 -- COMBOS
   DROP TABLE IF EXISTS COMBOS;
   CREATE TABLE COMBOS (
@@ -224,7 +225,6 @@ CREATE TABLE SAMPLES (
     PRIMARY KEY (pk),
     KEY COMBO (UL,LL,UR,LR)
   ) ENGINE=ARIA DEFAULT CHARACTER SET utf8mb4 COLLATE=utf8mb4_general_ci;
-
 
 
   INSERT INTO COMBOS (UL, UR) VALUES ('N,R','R,N'),('N,B','R,N'),('N,G','R,N'),('N,N','R,N'),('N,Y','R,N'),('N,R','R,Y'),('N,B','R,Y'),('N,G','R,Y'),('N,N','R,Y'),('N,Y','R,Y'),('N,B','R,B'),('N,G','R,B'),('N,N','R,B'),('N,Y','R,B'),('N,R','Y,N'),('N,B','Y,N'),('N,G','Y,N'),('N,N','Y,N'),('N,Y','Y,N'),('N,R','Y,G'),('N,B','Y,G'),('N,G','Y,G'),('N,N','Y,G'),('N,Y','Y,G'),('N,R','Y,B'),('N,B','Y,B'),('N,G','Y,B'),('N,N','Y,B'),('N,Y','Y,B'),('B,R','R,N'),('B,G','R,Y'),('B,N','R,Y'),('B,Y','R,Y'),('B,R','R,B'),('B,B','R,B'),('B,G','R,B'),('B,N','R,B'),('B,Y','R,B'),('B,R','Y,N'),('B,B','Y,N'),('B,G','Y,N'),('B,N','Y,N'),('B,Y','Y,N'),('B,R','Y,G'),('B,B','Y,G'),('B,G','Y,G'),('B,N','Y,G'),('B,Y','Y,G'),('B,R','Y,B'),('B,B','Y,B'),('B,G','Y,B'),('B,N','Y,B'),('B,Y','Y,B'),('G,R','R,N'),('G,N','R,N'),('G,Y','R,N'),('G,R','R,Y'),('G,Y','R,Y'),('G,B','R,B'),('G,G','R,B'),('G,N','R,B'),('G,Y','R,B'),('G,R','Y,N'),('G,B','Y,N'),('G,G','Y,N'),('G,N','Y,N'),('G,Y','Y,N'),('G,R','Y,G'),('G,B','Y,G'),('G,G','Y,G'),('G,N','Y,G'),('G,Y','Y,G'),('G,R','Y,B'),('G,B','Y,B'),('G,G','Y,B'),('G,N','Y,B'),('G,Y','Y,B'),('R,G','R,N'),('R,N','R,N'),('R,R','R,B'),('R,B','R,B'),('R,N','R,B'),('R,Y','R,B'),('R,R','Y,N'),('R,B','Y,N'),('R,G','Y,N'),('R,N','Y,N'),('R,Y','Y,N'),('R,R','Y,G'),('R,B','Y,G'),('R,G','Y,G'),('R,N','Y,G'),('R,Y','Y,G'),('R,R','Y,B'),('R,B','Y,B'),('R,G','Y,B'),('R,N','Y,B'),('R,Y','Y,B'),('Y,R','R,N'),('Y,B','R,N'),('Y,G','R,N'),('Y,N','R,N'),('Y,Y','R,N'),('Y,R','R,Y'),('Y,B','R,Y'),('Y,G','R,Y'),('Y,N','R,Y'),('Y,Y','R,Y'),('Y,R','R,B'),('Y,B','R,B'),('Y,G','R,B'),('Y,N','R,B'),('Y,Y','R,B'),('Y,R','Y,N'),('Y,B','Y,N'),('Y,G','Y,N'),('Y,N','Y,N'),('Y,Y','Y,N'),('Y,R','Y,G'),('Y,B','Y,G'),('Y,G','Y,G'),('Y,N','Y,G'),('Y,Y','Y,G'),('Y,R','Y,B'),('Y,B','Y,B'),('Y,G','Y,B'),('Y,N','Y,B'),('Y,Y','Y,B');
