@@ -25,7 +25,9 @@ bs4Dash::dashboardPage(
       menuItem("View Data",     tabName = "view_data",     icon = icon("table")),
       menuItem("Nests Map",     tabName = "nests_map",     icon = icon("map")),
       menuItem("Live Nest Map", tabName = "live_nest_map", icon = icon("broadcast-tower")),
-      menuItem("To-Do",         tabName = "todo",          icon = icon("tasks")),
+      menuItem("To-Do list",    tabName = "todo_list",     icon = icon("tasks")),
+      menuItem("To-Do map",     tabName = "todo_map",      icon = icon("street-view")),
+      menuItem("Overview",      tabName = "overview",      icon = icon("chart-line")),
       menuItem("Hatching",      tabName = "hatching_est",  icon = icon("egg"))
     )
   ),
@@ -42,7 +44,7 @@ bs4Dash::dashboardPage(
           ), 
 
           box(title = 'Settings',icon = icon("gears"),width = 2,
-            dateInput(inputId = 'refdate', 'Reference date')
+            dateInput(inputId = 'refdate', 'Reference date',  format = "yyyy-mm-dd")
           )
         )
       
@@ -149,22 +151,39 @@ bs4Dash::dashboardPage(
                 value = TRUE)
 
             )
-          
-          
-          
           )
         )
       ),
-      # To-Do tab
+      # To-Do list tab
       tabItem(
-        tabName = "todo",
+        tabName = "todo_list",
         spinner(
-        DT::DTOutput(outputId = "nests_overview") 
+        DT::DTOutput(outputId = "todo_list_show") 
         )
-
-
       ), 
-
+      # Overview tab
+      tabItem(
+        tabName = "overview",
+        tags$style(type = "text/css", "#overview_show {height: calc(93vh - 1px) !important;}"),
+        spinner(
+          plotOutput("overview_show")
+        )
+  ), 
+      # To-Do map tab
+      tabItem(
+        tabName = "todo_map",
+        fluidRow(
+          box(width = 12,maximizable = TRUE,
+            
+            downloadBttn(outputId = "todo_map_pdf", label = "PDF todo map"), 
+            tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
+            spinner(
+              plotOutput("todo_map_show")
+            )
+          
+          )
+        )
+      ), 
       # Hatching tab
       tabItem(
         tabName = "hatching_est",

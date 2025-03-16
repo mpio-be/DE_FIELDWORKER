@@ -20,8 +20,6 @@ map_empty <- function(x = OsterFeinerMoor ) {
 
 #' d = NESTS()
 #' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
-#' ds = sf::st_as_sf(d, coords = c("lon", "lat"))
-#' mapview::mapview(ds, zcol = "nest")
 #' map_nests(d)
 map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
   
@@ -30,7 +28,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
   x = d
   x[, nest := str_remove(nest, "^L")]
 
-  x[, LAB := glue_data(.SD, "{nest}({lastCheck}),{last_clutch}", .na = "")] # [{days_till_hatching}]
+  x[, LAB := glue_data(.SD, "{nest}", .na = "")]  
 
   if(nrow(x) > 0)
   
@@ -40,8 +38,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
     geom_point(data = x[collected==1], aes(lon, lat), size = size+0.2, shape = 5, inherit.aes = FALSE) +
     geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
     labs(subtitle = glue("{grandTotal} nests, 
-    {nrow(x) } shown, {nrow(x[collected == 1])} collected clutches ◈.\n
-    LEGEND: Nest (Last check - days ago), Clutch
+    {nrow(x) } shown, {nrow(x[collected == 1])} collected clutches ◈.
     ")) +
     xlab(NULL) + ylab(NULL)
 
@@ -63,59 +60,4 @@ map_captures <- function(d, size = 2.5,  lastCapture = 5) {
     geom_point(data = x, aes(lon, lat, color = capturedDaysAgo), size = size) +
     geom_text_repel(data = x, aes(lon, lat, label = combo), size = size) +
     scale_color_continuous(type = "viridis")
-}
-
-
-#' x = RESIGHTINGS() 
-#' g = map_resightings(x, daysAgo = 1)
-#' ggsave("~/Desktop/daily_map_res.png", g, width = 8, height =   8, units = "in")
-
-map_resightings <- function(d, size = 2.5, daysAgo = 5) {
-  x = copy(d)
-
-  if (!missing(daysAgo) && daysAgo > 0) {
-    x <- x[seenDaysAgo <= daysAgo]
-  }
-  x[, lab := glue_data(.SD, "{combo} [{seenDaysAgo}]", .na = '')]
-
-
-  map_empty() +
-    geom_point(data = x, aes(lon, lat), size = 1, color = "grey") +
-    geom_label_repel(data = x, aes(lon, lat, label = lab), size = size) 
-
-  
-}
-
-
-#' x = RESIGHTINGS_BY_ID('DB,Y', 'Y') 
-#' map_resights_by_id(x)
-#'
-map_resights_by_id <- function(x, size = 2.5) {
-  map_empty() +
-    geom_point(data = x, aes(lon, lat, color = seenDaysAgo), size = size) +
-    scale_colour_gradient(low = "red", high = "navy") +
-    coord_wader()
-}
-
-#' x = RESIGHTINGS_BY_DAY() 
-#' n = NESTS()
-#' map_resights_by_day(x)
-#' map_resights_by_day(x, n)
-#'
-map_resights_by_day <- function(x, n, size = 2.5) {
-  g <-
-    map_empty() +
-    geom_point(data = x, aes(lon, lat), size = 1, color = "grey") +
-    geom_text_repel(data = x, aes(lon, lat, label = combo), size = size) +
-    coord_wader()
-
-
-  if (!missing(n)) {
-    g <- g +
-      geom_point(data = n, aes(lon, lat), size = size, color = "red") +
-      geom_text_repel(data = n, aes(lon, lat, label = nest), size = size)
-  }
-
-
-  g
 }

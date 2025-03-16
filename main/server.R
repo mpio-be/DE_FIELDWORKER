@@ -93,7 +93,7 @@ shinyServer(function(input, output, session) {
   
 # Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
-    if (input$main %in% c("nests_map", "live_nest_map", "todo")) {
+    if (input$main %in% c("nests_map", "live_nest_map", "todo_list", "todo_map")) {
      
       n <- NESTS()
       nolat <- n[is.na(lat)]
@@ -135,7 +135,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-# DYNAMIC NESTS MAP: 
+# DYNAMIC NESTS MAP 
   leafmap <- leaflet_map()
   output$nest_dynmap_show <- renderLeaflet(leafmap)
   
@@ -160,11 +160,10 @@ shinyServer(function(input, output, session) {
     }
   })
   
-# TO-DO
-  output$nests_overview <- DT::renderDataTable({
-    n <- N()
+# TO-DO list
+  output$todo_list_show <- DT::renderDataTable({
+    n <- N() |> extract_TODO()
     req(n)
-    setorder(n, days_till_hatching)
     n
   },
   server        = FALSE,
@@ -176,7 +175,7 @@ shinyServer(function(input, output, session) {
     buttons     = list("copy", list(
       extend    = "collection",
       buttons   = c("excel", "pdf"),
-      text = "Download"
+      text      = "Download"
     )),
     scrollX     = "600px",
     deferRender = TRUE,
@@ -188,17 +187,56 @@ shinyServer(function(input, output, session) {
   class = c("compact", "stripe", "order-column", "hover")
   )
 
+# TO-DO MAP
+  output$todo_map_show <- renderPlot({
+
+    map_empty()
+  })
+
+
+  output$todo_map_pdf <- downloadHandler(
+    filename = "map_todo.pdf",
+    content = function(file) {
+
+      cairo_pdf(file = file, width = 11, height = 8.5)
+      map_empty() |> print()
+      dev.off()
+    }
+  )
+# Overview
+  output$overview_show <- renderPlot({
+
+    x = ALL_EGGS()
+    x[, year := year(date)]
+    x[, Date := update(min_pred_hatch_date, year = 2000) - 26 - 4]
+    
+    rdate = as.Date(input$refdate) |> update(year = 2000)
+
+    ggplot(x, aes(x = Date)) +
+      geom_histogram(binwidth = 2, fill = "#4f634c", color = "black") +
+      facet_wrap(~year) +
+      geom_vline(xintercept = rdate, col = "#d35400", size = 1.5) +
+      ggtitle("First egg date") +
+      scale_x_date(date_labels = "%b %d", date_breaks = "1 day") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14))
+
+
+
+  })
+
+
+
 # HATCHING
   output$hatching_est_plot <- renderPlot({
     
     require(mgcv)     
 
-    h = readRDS("./data/gam_float_to_hach.rds")
+    h = readRDS(hatch_pred_gam)
 
     pred =
       ggeffects::ggpredict(h, terms = c(
-        glue("egg_float_angle [{input$float_angle}]"),
-        glue("egg_float_height [{input$float_height}]")
+        glue("float_angle [{input$float_angle}]"),
+        glue("surface [{input$float_height}]")
       )) |> data.table()
     pred = pred[, .(predicted, conf.low, conf.high)]
     pred = melt(pred, measure.vars = names(pred))
@@ -217,14 +255,14 @@ shinyServer(function(input, output, session) {
 
 
     g1 =
-      ggplot(h$model, aes(x = egg_float_angle, y = days_to_hatch)) +
+      ggplot(h$model, aes(x = float_angle, y = days_to_hatch)) +
       ggbeeswarm::geom_beeswarm(alpha = 0.5) +
       geom_smooth() +
       geom_vline(aes(xintercept = input$float_angle), color = '#df4306') +
       theme_minimal(base_size = 12)
 
     g2 =
-      ggplot(h$model, aes(x = egg_float_height, y = days_to_hatch)) +
+      ggplot(h$model, aes(x = surface, y = days_to_hatch)) +
       ggbeeswarm::geom_beeswarm(alpha = 0.5) +
       geom_smooth(method = "loess", span = 1.0) +
       geom_vline(aes(xintercept = input$float_height), color = '#df4306') +

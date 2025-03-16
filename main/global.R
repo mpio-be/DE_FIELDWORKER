@@ -34,17 +34,23 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 
 #- VARIABLES
 
-  cnf  = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
-  user = cnf$user
-  host = cnf$host
-  pwd  = cnf$password
-  db   = cnf$database
+  cnf       = configr::read.config(getOption("dbo.my.cnf"))[[SERVER]]
+  user      = cnf$user
+  host      = cnf$host
+  pwd       = cnf$password
+  db        = cnf$database
+  dbbasenam = 'NOLAatDUMMERSEE'
+  years     = c(2024, 2025)
 
   app_nam              = "DE_FIELDWORKER"
   dbtabs_entry         = c("AUTHORS", "CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "SAMPLES")
   dbtabs_view          = c("AUTHORS", "CAPTURES", "CAPTURES_ARCHIVE", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "SAMPLES", "COMBOS")
   species              = c("NOLA", "REDS")
   studySiteCenter      = c(x = 8.341151, y = 52.55065)
+
+
+  hatch_pred_gam = "./data/gam_float_to_hach.rds"
+
 
 
 #! OPTIONS

@@ -1,5 +1,11 @@
 
 
+yr2dbnam <- function(yr, prefix = 'FIELD',  dbnam = dbbasenam){
+  glue("{prefix}_{yr}_{dbnam}")
+
+}
+
+
 colbyID <- function(x, id = "combo") {
   cc = x[, ..id] |> unique()
   cc[, col := rainbow(.N)]
@@ -92,7 +98,7 @@ hatching_table <- function() {
 #' x = DBq("SELECT * FROM EGGS", .db = 'FIELD_2024_NOLAatDUMMERSEE')
 #' 
 #' 
-hatching_prediction <- function(x, .gampath = "./data/gam_float_to_hach.rds") {
+hatching_prediction <- function(x, .gampath = hatch_pred_gam) {
 
   require(mgcv)
   fm = readRDS(.gampath)
