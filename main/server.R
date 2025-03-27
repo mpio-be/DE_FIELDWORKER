@@ -96,6 +96,7 @@ shinyServer(function(input, output, session) {
     if (input$main %in% c("nests_map", "live_nest_map", "todo_list", "todo_map")) {
      
       n <- NESTS()
+      
       nolat <- n[is.na(lat)]
       if (nrow(nolat) > 0) {
         ErrToast(

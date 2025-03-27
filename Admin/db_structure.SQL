@@ -156,6 +156,13 @@ CREATE TABLE NESTS (
   KEY gps (gps_id,gps_point)
 ) ENGINE=Aria ;
 
+
+-- post deploy updates
+ALTER TABLE NESTS 
+MODIFY COLUMN nest_state ENUM('F','C','I','pP','pD','H','notA','D','P')
+DEFAULT NULL COMMENT '<b>F</b> (found), <b>C</b> (collected), <b>I</b> (Incubated, active nest, warm eggs), <b>(p)P</b> [(possibly)Predated], <b>(p)D</b> [(possibly)Deserted, cold eggs], <b>H</b> (hatched, received hatched chicks), <b>notA</b> (not Active, nest marks removed), <b>D</b> (Deserted), <b>P</b> (Predated)';
+
+
 DROP TABLE IF EXISTS EGGS;
 CREATE TABLE EGGS (
   nest varchar(7)               DEFAULT NULL COMMENT '<kbd>Nest ID</kbd>, see NESTS table',

@@ -51,6 +51,7 @@ ALL_EGGS <- function(yy = years) {
 NESTS <- function(DB = db, .refdate = input$refdate) {
   
     x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
+    x[, date := lubridate::ymd_hms(paste(date, time_appr))]
     x[, lastDate := max(date), by = nest]
     x[, collected := any(nest_state == 'C'), nest]
 
