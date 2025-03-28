@@ -1,8 +1,5 @@
 # NOTE: subsets are done when mapping
 
-
-
-
 NESTS_last_seasons <- function() {
   o = DBq("SELECT nest, lat latit,lon longit FROM NESTS n JOIN GPS_POINTS g
           ON n.gps_id = g.gps_id AND n.gps_point = g.gps_point AND nest_state = 'F'
@@ -42,8 +39,6 @@ ALL_EGGS <- function(yy = years) {
 
 }
 
-
-
 #* This function should work on all seasons. Any difference between seasons should be implemented by extensions to this function. 
 #' n = NESTS()
 #' n = NESTS(DB = yr2dbnam(2024), .refdate = "2024-04-26")
@@ -59,6 +54,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, nest_state, collected,lastDate)]
     lst[, lastCheck := difftime(as.Date(.refdate), lastDate, units = "days") |> as.numeric() |> round(1)]
 
+    # TODO: replace last last_clutch with last counted clutch. 
 
   # lat, long, datetime_found
     gps = DBq(glue('SELECT n.gps_id, n.gps_point, CONCAT_WS(" ",n.date,n.time_appr) datetime_found, n.nest, lat, lon
@@ -138,7 +134,6 @@ subsetNESTS <- function(n, state, sp, d2h) {
 
 }
 
-
 #' x = NESTS(DB = yr2dbnam(2024), .refdate = "2024-04-25")
 #' x = NESTS()
 #' z = extract_TODO(x)
@@ -151,8 +146,8 @@ extract_TODO <- function(x) {
     #! RULES
       #! min_days_to_hatch <= 14
       #! nest_state != 'H'
-      #! catch or caching attempt with one day break (use NESTS.trap_on ) #TODO
-      #! hatch_state does not contain S,C,CC #TODO
+      #! #TODO: catch or caching attempt with one day break (use NESTS.trap_on ) 
+      #! #TODO: hatch_state does not contain S,C,CC 
 
     # male
     cm = o[min_days_to_hatch <= 14 & nest_state != 'H', .(nest, M_cap, M_nest)]
@@ -188,8 +183,8 @@ extract_TODO <- function(x) {
   # HATCH CHECK
     #! RULES
       #! if min_days_to_hatch <= 4
-      #!  if eggs show no signs of hatch then do not check next day but in 2 days #TODO
-      #! if not all chicks hatched (using, hatch_state, brood_size, clutch_size)  #TODO
+      #! #TODO: if eggs show no signs of hatch then do not check next day but in 2 days 
+      #! #TODO: if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
       
     hc = o[
       ! collected & 
@@ -209,12 +204,14 @@ extract_TODO <- function(x) {
   # prepare final set
   out = merge(catch, cc, all = TRUE, suffixes = c("", "_x"))
   
-  if(nrow(out) > 0) {
-    out[, todo := paste(c(todo, todo_x) |> na.omit(), collapse = ", "), by = .I]
-    out[, todo_x := NULL]
-  }
 
+  out[, todo := paste(c(todo, todo_x) |> na.omit(), collapse = ", "), by = .I]
+  out[, todo_x := NULL]
+
+  # TODO: add last brood from NESTS()
+  os = o[, .(nest, last_check_days_ago = lastCheck, last_clutch, last_brood = NA, last_state = nest_state, min_days_to_hatch)]
+  out = merge(os, out, by = "nest", all.x = TRUE)
+  setcolorder(out, "todo", after = "nest")
   out
-  
 
 }
