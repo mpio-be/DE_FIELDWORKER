@@ -33,9 +33,11 @@ bs4Dash::dashboardPage(
   ),
   
   body = dashboardBody(
+    includeCSS("./www/style.css"), 
+
     tabItems(
-      # Start tab
-      tabItem(
+      # Start tab (k4)
+        tabItem(
         tabName = "start",
         
         fluidRow(
@@ -50,26 +52,26 @@ bs4Dash::dashboardPage(
       
       ),
       # GPS tab
-      tabItem(
+        tabItem(
         tabName = "gps",
           includeMarkdown("./www/help/gps.md"),
           uiOutput("open_gps")
       ),
       # Enter Data tab
-      tabItem(
+        tabItem(
         tabName = "enter_data",
           uiOutput("new_data"),
           hr(),
           includeMarkdown("./www/help/enter_data.md")
       ),
       # DB tab
-      tabItem(
+        tabItem(
         tabName = "database",
         uiOutput("open_db"),
         includeMarkdown("./www/help/database.md")
       ),
       # View Data tab
-      tabItem(
+        tabItem(
         tabName = "view_data",
           bs4Dash::tabsetPanel(
             id = "tabset",
@@ -83,10 +85,10 @@ bs4Dash::dashboardPage(
           )
       ),
       # Nests Map tab
-      tabItem(
+        tabItem(
         tabName = "nests_map",
         fluidRow(
-          box(width = 12,maximizable = TRUE,
+          box(width = 12, maximizable = TRUE,
             
             sidebar = boxSidebar(
               id = "nest_controls",
@@ -119,7 +121,6 @@ bs4Dash::dashboardPage(
               ),
               downloadBttn(outputId = "map_nests_pdf", label = "PDF map")
             ),
-            tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
             
             spinner(
               plotOutput("map_nests_show")
@@ -129,7 +130,7 @@ bs4Dash::dashboardPage(
         )
       ),
       # Live Nest Map tab
-      tabItem(
+        tabItem(
         tabName = "live_nest_map",
         fluidRow(
           box(
@@ -142,7 +143,7 @@ bs4Dash::dashboardPage(
             
             sidebar = boxSidebar(
               id = "live_nest_map_controls",
-               width = 25,
+              width = 25,
               startOpen = TRUE, 
 
               checkboxInput(
@@ -155,22 +156,21 @@ bs4Dash::dashboardPage(
         )
       ),
       # To-Do list tab
-      tabItem(
+        tabItem(
         tabName = "todo_list",
         spinner(
         DT::DTOutput(outputId = "todo_list_show") 
         )
       ), 
       # Overview tab
-      tabItem(
+        tabItem(
         tabName = "overview",
-        tags$style(type = "text/css", "#overview_show {height: calc(93vh - 1px) !important;}"),
         spinner(
           plotOutput("overview_show")
         )
-  ), 
+      ), 
       # To-Do map tab
-      tabItem(
+        tabItem(
         tabName = "todo_map",
         fluidRow(
           box(width = 12,maximizable = TRUE,
@@ -185,7 +185,7 @@ bs4Dash::dashboardPage(
         )
       ), 
       # Hatching tab
-      tabItem(
+        tabItem(
         tabName = "hatching_est",
 
         fluidRow(
@@ -202,8 +202,6 @@ bs4Dash::dashboardPage(
         )
 
       )
-
-
 
     )
   ),

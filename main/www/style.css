@@ -1,12 +1,17 @@
 
+
+#map_nests_show {
+  height: calc(93vh - 1px) !important;
+}
+
+#overview_show {
+  height: calc(93vh - 1px) !important;
+}
+
 /* dataTable wrap */
 table.dataTable tbody td {
 word-wrap: break-word; 
 white-space: normal;
-}
-
-#map_captures_show {
-  height: calc(93vh - 1px) !important;
 }
 
 

@@ -3,6 +3,7 @@ shinyServer(function(input, output, session) {
 # For debugging only (assign input values to global environment)
   observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
+
 # Control bar: clock and hard drive status
   output$clock <- renderUI({
     invalidateLater(5000, session)
