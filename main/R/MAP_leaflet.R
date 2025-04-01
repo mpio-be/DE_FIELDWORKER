@@ -53,7 +53,7 @@ leaflet_map <- function(x = studySiteCenter[1], y = studySiteCenter[2]){
     overlayGroups = c("subplots", "last season nests"),   
     
     options = layersControlOptions(
-      collapsed = FALSE,
+      collapsed = TRUE,
       position = "topleft"
       )   
     )

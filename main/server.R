@@ -143,15 +143,18 @@ shinyServer(function(input, output, session) {
   
   # Update dynamic map only when the "live_nest_map" tab is active
   observeEvent(input$main, {
+    
     if (input$main == "live_nest_map") {
       n <- N()
       req(n)
       n <- st_as_sf(n[!is.na(lat)], coords = c("lon", "lat"), crs = 4326)
       if (nrow(n) > 0) {
         leafletProxy(mapId = "nest_dynmap_show") |>
-          clearMarkers() |>
-          clearShapes() |>
+          
+          clearGroup("live_nest_markers") |>
+          
           addCircleMarkers(
+            group = "live_nest_markers",
             data        = n,
             fillOpacity = 0.5,
             opacity     = 0.5,
