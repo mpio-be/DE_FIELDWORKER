@@ -16,8 +16,6 @@ map_empty <- function(x = OsterFeinerMoor ) {
 }
 
 
-
-
 #' d = NESTS()
 #' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
 #' map_nests(d)
@@ -71,16 +69,55 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
 }
 
 
-#' d = CAPTURES()
-#' g = map_captures(d, 2.1) 
-#' ggsave("~/Desktop/daily_map_cap.png", g, width = 8, height =   8, units = "in")
+#' n = NESTS()
+map_todo <- function(n, size = 2.5 ) {
+
+  x = NESTS() |> extract_TODO()
+  x = x[!is.na(todo)]
 
 
-map_captures <- function(d, size = 2.5,  lastCapture = 5) {
-  x = d[capturedDaysAgo <= lastCapture]
 
-  map_empty() +
-    geom_point(data = x, aes(lon, lat, color = capturedDaysAgo), size = size) +
-    geom_text_repel(data = x, aes(lon, lat, label = combo), size = size) +
-    scale_color_continuous(type = "viridis")
+  g = map_empty()
+
+  if (nrow(n) > 0) {
+    g =
+      g +
+      geom_point(data = n, aes(lon, lat), size = size * 0.8, col = "grey") +
+      geom_text_repel(data = n, aes(lon, lat, label = str_remove(nest, "^L")), size = size * 0.8, col = "grey") +
+      xlab(NULL) +
+      ylab(NULL)
+  }
+  
+
+  if (nrow(x) > 0) {
+    x = merge(x, n[, .(nest, lat, lon)])
+    
+    g =
+      g +
+      geom_point(data = x, aes(lon, lat, color = todo), size = size) +
+      guides(
+        color = guide_legend(nrow = 2)
+      ) +
+      scale_color_brewer(palette='Dark2', name = NULL) +
+      theme(
+        legend.position        = "inside",
+        legend.position.inside = c(0.02, 0.98),
+        legend.justification   = c(0, 1),
+        legend.background      = element_blank(),     
+        legend.key             = element_blank(),            
+        legend.box             = "horizontal",               
+        legend.text            = element_text(size = 10), 
+        plot.subtitle          = element_text(size = 9) 
+      )
+
+  }
+
+
+  print(g)
+
+
+
+
+
+
 }

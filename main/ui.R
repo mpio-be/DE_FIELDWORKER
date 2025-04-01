@@ -173,17 +173,28 @@ bs4Dash::dashboardPage(
         tabItem(
         tabName = "todo_map",
         fluidRow(
-          box(width = 12,maximizable = TRUE,
+          box(width = 12, maximizable = TRUE,
             
-            downloadBttn(outputId = "todo_map_pdf", label = "PDF todo map"), 
-            tags$style(type = "text/css", "#map_nests_show {height: calc(93vh - 1px) !important;}"),
+            sidebar = boxSidebar(
+              id = "todo_map_controls",
+              startOpen = TRUE, 
+              sliderInput(
+                inputId = "todo_map_size",
+                label = "Text and symbol size:",
+                min = 1, max = 7, step = 0.2, value = 3
+              ),
+
+              downloadBttn(outputId = "map_todo_pdf", label = "PDF to-do map")
+            ),
+            
             spinner(
-              plotOutput("todo_map_show")
+              plotOutput("map_todo_show")
             )
           
           )
         )
-      ), 
+      ),
+      
       # Hatching tab
         tabItem(
         tabName = "hatching_est",

@@ -190,21 +190,28 @@ shinyServer(function(input, output, session) {
   )
 
 # TO-DO MAP
-  output$todo_map_show <- renderPlot({
+  output$map_todo_show <- renderPlot({
+    
+    n <- N()
+    req(n)
+    map_todo(n, size = input$todo_map_size)
+    
+    })
 
-    map_empty()
-  })
 
-
-  output$todo_map_pdf <- downloadHandler(
-    filename = "map_todo.pdf",
+  output$map_todo_pdf <- downloadHandler(
+    filename = "map_todo_pdf",
     content = function(file) {
+      n <- N()
+      req(n)
 
       cairo_pdf(file = file, width = 11, height = 8.5)
-      map_empty() |> print()
+      map_todo(n, size = input$todo_map_size)
       dev.off()
     }
   )
+
+
 # Overview
   output$overview_show <- renderPlot({
 

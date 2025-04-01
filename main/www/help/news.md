@@ -1,7 +1,8 @@
 
-> <h1>New feature</h1> <code>The Fieldworker app</code> now integrates <strong>ChatGPT-5</strong> to assist with data entry checks and contextual auto-completion.  
-As you enter data, the system reviews inputs in real time, flags potential issues, and suggests likely values based on previous entries.  
-*Please allow a brief pause after each entry to give the AI time to process and respond.*
+> Both the *to-do* map and the *to-do* list work now 🥳 . 
+
+
+> <h1>New feature</h1> <code>The Fieldworker app</code> now integrates <strong>ChatGPT-5</strong> to assist with data entry checks and contextual auto-completion.  As you enter data, the system reviews inputs in real time, flags potential issues, and suggests likely values based on previous entries.  *Please allow a brief pause after each entry to give the AI time to process and respond.*
 
 
 

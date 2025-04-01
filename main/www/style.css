@@ -4,6 +4,10 @@
   height: calc(93vh - 1px) !important;
 }
 
+#map_todo_show {
+  height: calc(93vh - 1px) !important;
+}
+
 #overview_show {
   height: calc(93vh - 1px) !important;
 }
