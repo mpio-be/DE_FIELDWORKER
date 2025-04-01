@@ -10,7 +10,8 @@ leaflet_map <- function(x = studySiteCenter[1], y = studySiteCenter[2]){
   ) |>
   
   addTiles(group = "Street Map") |>
-    
+
+  
   addProviderTiles("OpenStreetMap",     group = "Street Map") |>
   addProviderTiles("Esri.WorldImagery", group = "Satellite") |>
   addProviderTiles("OpenTopoMap",       group = "Topo Map")  |>
