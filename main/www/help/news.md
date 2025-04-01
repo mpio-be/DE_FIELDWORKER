@@ -1,9 +1,7 @@
 
-> Both the *to-do* map and the *to-do* list work now 🥳. 
+> Both the *to-do* map and the *to-do* list work now. 🔔 click ⚙⚙ on the right to change settings and print pdf maps.
 
-> 🔔  click ⚙⚙ on the right to change settings and print pdf map.
-
-> Life nest map is updated (shows last season nests and plots) 🧭. 
+> Life nest map is updated (shows last season nests and plots). 
 
 > <h1>New feature</h1> <code>The Fieldworker app</code> now integrates <strong>ChatGPT-5</strong> to assist with data entry checks and contextual auto-completion.  As you enter data, the system reviews inputs in real time, flags potential issues, and suggests likely values based on previous entries.  *Please allow a brief pause after each entry to give the AI time to process and respond.*
 
