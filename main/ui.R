@@ -190,7 +190,7 @@ bs4Dash::dashboardPage(
 
         fluidRow(
           box(title = 'Select flotation ',icon = icon("gears"), width = 2,
-            sliderInput('float_angle', 'Angle:', value = 50, min = 19, max = 90,step = 1),
+            sliderInput('float_angle', 'Angle:', value = 50, min = 14, max = 90,step = 1),
             sliderInput('float_height', 'Height:',value = 2, min = 0, max = 6,step = 1)
           ), 
 

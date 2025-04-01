@@ -95,7 +95,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
               WHERE date <= {shQuote(.refdate)}"), .db = DB)
     d2h = hatching_prediction(x, .gampath = hatch_pred_gam)
     d2h = d2h[, .(
-      min_days_to_hatch_at_found = min(conf.low, na.rm = TRUE),
+      min_days_to_hatch_at_found = median(conf.low, na.rm = TRUE),
       date = max(date, na.rm = TRUE) 
     ), nest]
     d2h = d2h[, min_pred_hatch_date := date + min_days_to_hatch_at_found]
