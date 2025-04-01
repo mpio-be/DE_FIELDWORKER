@@ -1,5 +1,7 @@
 
-> Both the *to-do* map and the *to-do* list work now 🥳 . 
+> Both the *to-do* map and the *to-do* list work now 🥳. 
+
+> 🔔  click ⚙⚙ on the right to change settings and print pdf map.
 
 > Life nest map is updated (shows last season nests and plots) 🧭. 
 
