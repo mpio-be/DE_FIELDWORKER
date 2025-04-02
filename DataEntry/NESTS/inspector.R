@@ -19,11 +19,14 @@ x[, rowid := .I]
 
 list(
 # Mandatory values
-  x[, .(author,nest,nest_state,date,time_appr,clutch_size, rowid)] |>
+  x[, .(author,nest,nest_state,date,time_appr,rowid)] |>
     is.na_validator()
   ,
-  x[nest_state == 'F', .(gps_id,gps_point, rowid)] |>
+  x[nest_state == 'F', .(gps_id,gps_point,clutch_size, rowid)] |>
     is.na_validator("Mandatory when nest is found.")
+  ,
+  x[nest_state %in% c("C", "pD", "pP", "D", "P"), .(gps_id,gps_point,clutch_size, rowid)] |>
+    is.na_validator("Mandatory when nest is checked.")
   ,
 # Re-inforce formats
   x[, .(date, rowid)] |> POSIXct_validator()
@@ -116,7 +119,7 @@ list(
   ,
   x[!is.na(clutch_size), .(clutch_size)]  |> 
   interval_validator(  
-    v = data.table(variable = "clutch_size", lq = 1, uq = 4 ),  
+    v = data.table(variable = "clutch_size", lq = 0, uq = 4 ),  
     reason = "Unusual clutch size." 
   )|> try_validator(nam = "val4")
 , 
