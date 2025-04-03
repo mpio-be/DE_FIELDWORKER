@@ -116,18 +116,13 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
 
 #' ns = subsetNESTS(NESTS(), state = input$nest_state, d2h = input$days_to_hatch)
 #' Keep the subset separated from NESTS() so that N() is loaded only once. Subset is done through input$
-subsetNESTS <- function(n, state, sp, d2h) {
+subsetNESTS <- function(n, state) {
   
   n = n[!is.na(lat)]
   
   # subsets
   if (!missing(state) | !is.null(state)) {
     n= n[nest_state %in% state]
-  }
-
-
-  if (!missing(d2h) | !is.null(d2h)) {
-    n = n[min_days_to_hatch <= d2h | is.na(min_days_to_hatch)]
   }
   
   n

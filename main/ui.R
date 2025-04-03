@@ -1,17 +1,19 @@
 bs4Dash::dashboardPage(
+  scrollToTop = TRUE,
+  dark = FALSE,
   help = NULL,
   preloader = list(
     html = waiter::spin_loaders(id = 16, color = "#01125f"), 
     color = "#b8c7c5"
   ),
-  dark = FALSE,
   title = paste(app_nam, year(Sys.Date())),
   
   header = dashboardHeader(
     title = dashboardBrand(
       title = paste(pagetitle, year(Sys.Date())),
       image = "ICO.png"
-    )
+    ), 
+    uiOutput("ref_date_text")
   ),
   
   sidebar = dashboardSidebar(
@@ -28,10 +30,65 @@ bs4Dash::dashboardPage(
       menuItem("To-Do list",    tabName = "todo_list",     icon = icon("tasks")),
       menuItem("To-Do map",     tabName = "todo_map",      icon = icon("street-view")),
       menuItem("Overview",      tabName = "overview",      icon = icon("chart-line")),
-      menuItem("Hatching",      tabName = "hatching_est",  icon = icon("egg"))
+      menuItem("Hatching",      tabName = "hatching_est",  icon = icon("egg")), 
+      HR(),
+      menuItem( text = "",  icon = icon("github",style = "color: gray;"), 
+        href = "https://github.com/mpio-be/DE_FIELDWORKER"
+      ), 
+      menuItem( text = "",  icon = icon("at",style = "color: gray;"), 
+        href = "mailto:mihai.valcu@bi.mpg.de?subject=Complain"
+      )
+
     )
   ),
-  
+
+  controlbar = dashboardControlbar(
+    width = 400,
+    overlay = FALSE, 
+    collapsed = FALSE,
+    
+    airDatepickerInput(
+      inputId     = 'refdate', 
+      label       = 'Reference date', 
+      value       = Sys.time(), 
+      todayButton = TRUE, 
+      update_on   = "change"
+    ), 
+
+    sliderInput(
+      inputId = "nest_size",
+      label = "Text and symbol size:",
+      min = 1, max = 7, step = 0.2, value = 3
+      )
+    ,
+
+    pickerInput(
+      inputId = "nest_state", label = "Nest state:",
+      multiple = TRUE,
+      choices = c(
+        "Found"             = "F",
+        "Collected"         = "C",
+        "Incubated"         = "I",
+        "possibly Predated" = "pP",
+        "possibly Deserted" = "pD",
+        "Predated"          = "P",
+        "Deserted"          = "D",
+        "Hatched"           = "H",
+        "Not Active"        = "notA"),
+      selected = c("F", "C", "I", "pP", "pD", "P", "D", "H", "notA")
+      )
+    ,
+
+    downloadBttn(outputId = "map_nests_pdf", label = "All nests", icon = icon("file-pdf")), 
+    downloadBttn(outputId = "map_todo_pdf", label = "To-do", icon = icon("file-pdf"))
+    
+    ,
+    uiOutput("clock")
+    
+    ,
+    uiOutput("hdd_state")
+  )
+  , 
   body = dashboardBody(
     includeCSS("./www/style.css"), 
 
@@ -39,15 +96,9 @@ bs4Dash::dashboardPage(
       # Start tab (k4)
         tabItem(
         tabName = "start",
-        
-        fluidRow(
-          box(title = 'Info',icon = icon("rss"), width = 10,
-            includeMarkdown("./www/help/news.md")
-          ), 
-
-          box(title = 'Settings',icon = icon("gears"),width = 2,
-            dateInput(inputId = 'refdate', 'Reference date',  format = "yyyy-mm-dd")
-          )
+          infoBox(icon = icon("envelope-open"), 
+          width = 12,
+          includeMarkdown("./www/help/news.md")
         )
       
       ),
@@ -89,39 +140,6 @@ bs4Dash::dashboardPage(
         tabName = "nests_map",
         fluidRow(
           box(width = 12, maximizable = TRUE,
-            
-            sidebar = boxSidebar(
-              id = "nest_controls",
-              startOpen = TRUE, 
-              sliderInput(
-                inputId = "nest_size",
-                label = "Text and symbol size:",
-                min = 1, max = 7, step = 0.2, value = 3
-              ),
-              sliderInput(
-                inputId = "days_to_hatch",
-                label = "Days till hatching",
-                min = 0, max = 30, step = 1, value = 30
-              ),
-              pickerInput(
-                inputId = "nest_state", label = "Nest state:",
-                multiple = TRUE,
-                choices = c(
-                  "Found"             = "F",
-                  "Collected"         = "C",
-                  "Incubated"         = "I",
-                  "possibly Predated" = "pP",
-                  "possibly Deserted" = "pD",
-                  "Predated"          = "P",
-                  "Deserted"          = "D",
-                  "Hatched"           = "H",
-                  "Not Active"        = "notA"
-                ),
-                selected = c("F", "C", "I", "pP", "pD", "P", "D", "H", "notA")
-              ),
-              downloadBttn(outputId = "map_nests_pdf", label = "PDF map")
-            ),
-            
             spinner(
               plotOutput("map_nests_show")
             )
@@ -139,19 +157,8 @@ bs4Dash::dashboardPage(
             
             spinner(
             leafletOutput(outputId = "nest_dynmap_show",width = "100%", height = "calc(99vh - 1px)") 
-            ),
-            
-            sidebar = boxSidebar(
-              id = "live_nest_map_controls",
-              width = 25,
-              startOpen = TRUE, 
-
-              checkboxInput(
-                "live_nest_map_show_past_nests", 
-                "Show last season's nests", 
-                value = TRUE)
-
             )
+
           )
         )
       ),
@@ -175,18 +182,6 @@ bs4Dash::dashboardPage(
         fluidRow(
           box(width = 12, maximizable = TRUE,
             
-            sidebar = boxSidebar(
-              id = "todo_map_controls",
-              startOpen = TRUE, 
-              sliderInput(
-                inputId = "todo_map_size",
-                label = "Text and symbol size:",
-                min = 1, max = 7, step = 0.2, value = 3
-              ),
-
-              downloadBttn(outputId = "map_todo_pdf", label = "PDF to-do map")
-            ),
-            
             spinner(
               plotOutput("map_todo_show")
             )
@@ -194,7 +189,6 @@ bs4Dash::dashboardPage(
           )
         )
       ),
-      
       # Hatching tab
         tabItem(
         tabName = "hatching_est",
@@ -215,11 +209,8 @@ bs4Dash::dashboardPage(
       )
 
     )
-  ),
-  
-  controlbar = dashboardControlbar(
-    uiOutput("clock"),
-    code("Hard drive:"),
-    uiOutput("hdd_state")
   )
+
+
+
 )

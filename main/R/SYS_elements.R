@@ -14,7 +14,7 @@ dfsys_output <- function( x = dfsys() ) {
     
   o1 = glue('
   <a>
-  <span class="badge badge-pill badge-primary">
+  <span class="badge badge-primary">
   {x$Avail} free
   </span>
   </a>
@@ -23,7 +23,7 @@ dfsys_output <- function( x = dfsys() ) {
   
   o2 = glue('
   <a>
-  <span class="badge badge-pill badge-{state}">
+  <span class="badge badge-{state}">
   {x$`Use%`}% used.
    </span>
    </a>

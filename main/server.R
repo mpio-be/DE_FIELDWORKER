@@ -4,10 +4,34 @@ shinyServer(function(input, output, session) {
   observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
 
+# Header
+  output$ref_date_text <- renderUI({
+    
+
+    ago = round(Sys.Date() - as.Date(input$refdate))
+
+    if(ago==0){
+      o = glue("Reference date: {S(inputdate,1)} today. <i>Todo-s are for tomorrow!</i>")
+    }
+    
+    if (ago > 0) {
+      o = glue("Reference date: {S(inputdate,2)} {abs(ago)} days ago.")
+    }
+    
+    if(ago < 0){
+      o = glue("Reference date: {S(inputdate,2)} {abs(ago)} days from now.")
+    }
+
+    HTML(o)
+ 
+  
+  })
+
+
 # Control bar: clock and hard drive status
   output$clock <- renderUI({
     invalidateLater(5000, session)
-    glue('<kbd>{format(Sys.time(), "%d-%B %H:%M %Z")}</kbd>') %>% HTML()
+    glue('{HR()}{format(Sys.time(), "%d-%B %H:%M %Z")}') |> HTML()
   })
   
   output$hdd_state <- renderUI({
@@ -92,11 +116,11 @@ shinyServer(function(input, output, session) {
   output$SAMPLES_show             <- TABLE_show("SAMPLES")
   output$COMBOS_show              <- TABLE_show("COMBOS")
   
-# Reactive for NESTS data (only update when one of the nest-related tabs is active)
+#- N: Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
     if (input$main %in% c("nests_map", "live_nest_map", "todo_list", "todo_map")) {
-     
-      n <- NESTS()
+
+      n <- NESTS(.refdate = input$refdate)
       
       nolat <- n[is.na(lat)]
       if (nrow(nolat) > 0) {
@@ -120,7 +144,7 @@ shinyServer(function(input, output, session) {
     n <- N()
     req(n)
     grandN <- nrow(n)
-    n <- subsetNESTS(n, state = input$nest_state, d2h = input$days_to_hatch)
+    n <- subsetNESTS(n, state = input$nest_state)
     map_nests(n, size = input$nest_size, grandTotal = grandN)
   })
   
@@ -130,7 +154,7 @@ shinyServer(function(input, output, session) {
       n <- N()
       req(n)
       grandN <- nrow(n)
-      n <- subsetNESTS(n, state = input$nest_state, d2h = input$days_to_hatch)
+      n <- subsetNESTS(n, state = input$nest_state)
       cairo_pdf(file = file, width = 11, height = 8.5)
       print(map_nests(n, size = input$nest_size, grandTotal = grandN))
       dev.off()
@@ -197,7 +221,7 @@ shinyServer(function(input, output, session) {
     
     n <- N()
     req(n)
-    map_todo(n, size = input$todo_map_size)
+    map_todo(n, size = input$nest_size)
     
     })
 
@@ -209,7 +233,7 @@ shinyServer(function(input, output, session) {
       req(n)
 
       cairo_pdf(file = file, width = 11, height = 8.5)
-      map_todo(n, size = input$todo_map_size)
+      map_todo(n, size = input$nest_size)
       dev.off()
     }
   )
