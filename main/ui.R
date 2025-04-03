@@ -47,13 +47,12 @@ bs4Dash::dashboardPage(
     overlay = FALSE, 
     collapsed = FALSE,
     
-    airDatepickerInput(
+    dateInput(
       inputId     = 'refdate', 
       label       = 'Reference date', 
-      value       = Sys.time(), 
-      todayButton = TRUE, 
-      update_on   = "change"
-    ), 
+      value       = Sys.time() 
+    )
+    , 
 
     sliderInput(
       inputId = "nest_size",
