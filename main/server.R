@@ -11,15 +11,15 @@ shinyServer(function(input, output, session) {
     ago = round(Sys.Date() - as.Date(input$refdate))
 
     if(ago==0){
-      o = glue("Reference date: {S(inputdate,1)} today. <i>Todo-s are for tomorrow!</i>")
+      o = glue("Reference date: {S(input$refdate,1)} today. <i>Todo-s are for tomorrow!</i>")
     }
     
     if (ago > 0) {
-      o = glue("Reference date: {S(inputdate,2)} {abs(ago)} days ago.")
+      o = glue("Reference date: {S(input$refdate,2)} {abs(ago)} days ago.")
     }
     
     if(ago < 0){
-      o = glue("Reference date: {S(inputdate,2)} {abs(ago)} days from now.")
+      o = glue("Reference date: {S(input$refdate,2)} {abs(ago)} days from now.")
     }
 
     HTML(o)
