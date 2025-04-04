@@ -47,43 +47,52 @@ bs4Dash::dashboardPage(
     overlay = FALSE, 
     collapsed = FALSE,
     
-    dateInput(
-      inputId     = 'refdate', 
-      label       = 'Reference date', 
-      value       = Sys.time() 
+    box(title = "Reference date" |>bttl(), 
+      width = 12,collapsible = FALSE,  
+      dateInput(
+        inputId     = 'refdate', 
+        label       = NULL, 
+        value       = Sys.time() 
+      )
+
     )
     , 
 
-    sliderInput(
-      inputId = "nest_size",
-      label = "Text and symbol size:",
-      min = 1, max = 7, step = 0.2, value = 3
-      )
+    box(title = "Map settings"|>bttl() , width = 12, 
+      sliderInput(
+        inputId = "nest_size",
+        label = "Text and symbol size:",
+        min = 1, max = 7, step = 0.2, value = 3
+        )
+      ,
+
+      pickerInput(
+        inputId = "nest_state", label = "Nest state:",
+        multiple = TRUE,
+        choices = c(
+          "Found"             = "F",
+          "Collected"         = "C",
+          "Incubated"         = "I",
+          "possibly Predated" = "pP",
+          "possibly Deserted" = "pD",
+          "Predated"          = "P",
+          "Deserted"          = "D",
+          "Hatched"           = "H",
+          "Not Active"        = "notA"),
+        selected = c("F", "C", "I", "pP", "pD", "P", "D", "H", "notA")
+        )
+    )  
     ,
 
-    pickerInput(
-      inputId = "nest_state", label = "Nest state:",
-      multiple = TRUE,
-      choices = c(
-        "Found"             = "F",
-        "Collected"         = "C",
-        "Incubated"         = "I",
-        "possibly Predated" = "pP",
-        "possibly Deserted" = "pD",
-        "Predated"          = "P",
-        "Deserted"          = "D",
-        "Hatched"           = "H",
-        "Not Active"        = "notA"),
-      selected = c("F", "C", "I", "pP", "pD", "P", "D", "H", "notA")
-      )
-    ,
+    box(title = "Download" |>bttl(), width = 12, 
 
-    downloadBttn(outputId = "map_nests_pdf", label = "All nests", icon = icon("file-pdf")), 
-    downloadBttn(outputId = "map_todo_pdf", label = "To-do", icon = icon("file-pdf"))
-    
+      downloadBttn(outputId = "map_nests_pdf", label = "All nests", icon = icon("file-pdf")), 
+      downloadBttn(outputId = "map_todo_pdf", label = "To-do", icon = icon("file-pdf"))
+      
+
+    )
     ,
     uiOutput("clock")
-    
     ,
     uiOutput("hdd_state")
   )
@@ -95,7 +104,9 @@ bs4Dash::dashboardPage(
       # Start tab (k4)
         tabItem(
         tabName = "start",
-          infoBox(icon = icon("envelope-open"), 
+          box(
+          collapsible = FALSE,
+          icon = icon("envelope-open"), 
           width = 12,
           includeMarkdown("./www/help/news.md")
         )

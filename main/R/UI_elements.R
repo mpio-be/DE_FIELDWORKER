@@ -21,6 +21,15 @@ S <- function(x = "-------", z = 1) {
   )
 }
 
+# box title style
+bttl <- function(text, color = "#8a2d02",  weight = "bold", icon = NULL) {
+  icon_html <- if (!is.null(icon)) sprintf("<i class='fas fa-%s'></i> ", icon) else ""
+  HTML(sprintf(
+    "<span style='font-weight: %s; color: %s; '>%s%s</span>",
+    weight, color, icon_html, text
+  ))
+}
+
 
 select_combo_list <- function() {
   DBq("SELECT DISTINCT UL, LL, UR, LR FROM CAPTURES where tagID is not NULL") |>

@@ -207,6 +207,8 @@ extract_TODO <- function(x) {
   os = o[, .(nest, last_check_days_ago = lastCheck, last_clutch, last_brood = NA, last_state = nest_state, min_days_to_hatch)]
   out = merge(os, out, by = "nest", all.x = TRUE)
   setcolorder(out, "todo", after = "nest")
+  
+    
+  setorder(out, todo, na.last=TRUE)
   out
-
 }
