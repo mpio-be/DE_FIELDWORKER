@@ -30,7 +30,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   pwd  = cnf$password
   db   = cnf$database
 
-  tags = shiny::tags
+  
 
 #* FUNCTIONS
     DBq <- function(x) {

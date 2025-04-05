@@ -47,14 +47,18 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
   
     x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
     x[, date := lubridate::ymd_hms(paste(date, time_appr))]
+    setorder(x, nest, date)
+    # last last_clutch = last counted clutch. 
+    x[, clutch_size := nafill(clutch_size, "locf")]
+
     x[, lastDate := max(date), by = nest]
     x[, collected := any(nest_state == 'C'), nest]
+    
 
   # last state (all nests); collected
     lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, nest_state, collected,lastDate)]
     lst[, lastCheck := difftime(as.Date(.refdate), lastDate, units = "days") |> as.numeric() |> round(1)]
 
-    # TODO: replace last last_clutch with last counted clutch. 
 
   # lat, long, datetime_found
     gps = DBq(glue('SELECT n.gps_id, n.gps_point, CONCAT_WS(" ",n.date,n.time_appr) datetime_found, n.nest, lat, lon
@@ -141,8 +145,8 @@ extract_TODO <- function(x) {
     #! RULES
       #! min_days_to_hatch <= 14
       #! nest_state != 'H'
-      #! #TODO: catch or caching attempt with one day break (use NESTS.trap_on ) 
-      #! #TODO: hatch_state does not contain S,C,CC 
+      #TODO: catch or caching attempt with one day break (use NESTS.trap_on) 
+      #TODO: hatch_state does not contain S, C, CC 
 
     # male
     cm = o[min_days_to_hatch <= 14 & nest_state != 'H', .(nest, M_cap, M_nest)]
@@ -178,8 +182,8 @@ extract_TODO <- function(x) {
   # HATCH CHECK
     #! RULES
       #! if min_days_to_hatch <= 4
-      #! #TODO: if eggs show no signs of hatch then do not check next day but in 2 days 
-      #! #TODO: if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
+      #TODO: if eggs show no signs of hatch then do not check next day but in 2 days 
+      #TODO: if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
       
     hc = o[
       ! collected & 
@@ -194,7 +198,7 @@ extract_TODO <- function(x) {
     
   # CHICK PROCESSING
     #! RULES
-      #! if hatch_state contains CC, C then go process chicks. #TODO
+      #TODO: if hatch_state contains CC, C then go process chicks. 
 
   # prepare final set
   out = merge(catch, cc, all = TRUE, suffixes = c("", "_x"))

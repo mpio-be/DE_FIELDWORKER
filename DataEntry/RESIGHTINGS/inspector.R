@@ -6,8 +6,6 @@
 #' ii = inspector(dat)
 #' evalidators(ii)
 
-# TODO: validate the existence of GPS points in the GPS table (GPS should be downloaded before data entry). 
-
 
 
 inspector.RESIGHTINGS <- function(dat, ...){

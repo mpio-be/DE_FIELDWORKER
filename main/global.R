@@ -5,7 +5,7 @@
 SERVER = "de_fieldworker" # dbo::my.cnf()
 
 
-#! PACKAGES & SETTINGS
+#! PACKAGES
   sapply(
     c(
     "dbo",
@@ -28,9 +28,9 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     "leaflet.extras"
   ), require, character.only = TRUE, quietly = TRUE)
 
+# External data
   data(OsterFeinerMoor, package = "wadeR")
 
-  tags = shiny::tags
 
 #- VARIABLES
 
@@ -52,15 +52,28 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   hatch_pred_gam = "./data/gam_float_to_hach.rds"
 
 
+  nest_states = c(
+    "F"    = "#00815f",  
+    "C"    = "#E69F00",  
+    "I"    = "#fff023",  
+    "pP"   = "#A50026",  
+    "P"    = "#6405a3",  
+    "pD"   = "#CC79A7",  
+    "D"    = "#6A51A3",  
+    "H"    = "#1aa9fc",  
+    "notA" = "#4b4b4b"   
+  )
+
 
 #! OPTIONS
   options(shiny.autoreload = TRUE)
   options(dbo.tz = "Europe/Berlin")
-
+  
+  options(ggrepel.max.overlaps = Inf)
 
 #! UI DEFAULTS
   
-  ver                 = "v 0.0.2"
+  ver                 = "v 0.1"
   apptitle            = "DÜMMER-SEE"
   pagetitle           = apptitle
   set_capturedDaysAgo = 3

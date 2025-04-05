@@ -9,8 +9,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
       panel.grid      = element_line(colour = "#ffffff", linewidth = 0),
       panel.spacing   = unit(c(0, 0, 0, 0), "cm"),
       axis.text.x     = element_blank(),
-      axis.text.y     = element_blank(), 
-      legend.position = "bottom"
+      axis.text.y     = element_blank()
     )
 
 }
@@ -19,7 +18,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
 #' d = NESTS()
 #' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
 #' map_nests(d)
-map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
+map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { 
   
   g = map_empty()
 
@@ -40,7 +39,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
         glue("{grandTotal} nests, {nrow(x) } shown, {nrow(x[collected == 1])} collected clutches ◈")
       ) +
       
-      scale_color_discrete(name = NULL) +
+      scale_color_manual(values = nest_states, name = NULL) +
       scale_shape_manual(values = 5, name = NULL) +
       
       xlab(NULL) +
@@ -53,14 +52,15 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { # state  = "F"
       
       theme(
         legend.position        = "inside",
-        legend.position.inside = c(0.02, 0.98),
+        legend.position.inside = c(0.02, 0.90),
         legend.justification   = c(0, 1),
         legend.background      = element_blank(),     
         legend.key             = element_blank(),            
         legend.box             = "horizontal",               
         legend.text            = element_text(size = 10), 
-        plot.subtitle          = element_text(size = 9) 
+        plot.subtitle          = element_text(size = 9, margin = margin(t = 20)) 
       )
+  
   }
 
 

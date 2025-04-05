@@ -18,7 +18,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     "dbo", 
     "configr"
   ), require, character.only = TRUE, quietly = TRUE)
-  tags = shiny::tags
+  
 
 #* FUNCTIONS
   
