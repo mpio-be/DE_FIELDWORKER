@@ -227,7 +227,7 @@ shinyServer(function(input, output, session) {
 
 
   output$map_todo_pdf <- downloadHandler(
-    filename = "map_todo_pdf",
+    filename = "map_todo.pdf",
     content = function(file) {
       n <- N()
       req(n)

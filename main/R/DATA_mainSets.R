@@ -201,13 +201,17 @@ extract_TODO <- function(x) {
       #TODO: if hatch_state contains CC, C then go process chicks. 
 
   # prepare final set
+  ll = o[,.(nest, lat,lon)] 
   out = merge(catch, cc, all = TRUE, suffixes = c("", "_x"))
-  
 
   out[, todo := paste(c(todo, todo_x) |> na.omit(), collapse = ", "), by = .I]
   out[, todo_x := NULL]
 
-  # TODO: add last brood from NESTS()
+
+  out = merge(out, ll, by = "nest", all = TRUE)
+
+
+
   os = o[, .(nest, last_check_days_ago = lastCheck, last_clutch, last_brood = NA, last_state = nest_state, min_days_to_hatch)]
   out = merge(os, out, by = "nest", all.x = TRUE)
   setcolorder(out, "todo", after = "nest")
@@ -215,4 +219,6 @@ extract_TODO <- function(x) {
     
   setorder(out, todo, na.last=TRUE)
   out
+
+
 }
