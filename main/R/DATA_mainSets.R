@@ -47,11 +47,14 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
   
   # data
     x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
+    x[, pk := NULL]
+    x = unique(x)
+
     x[, date := lubridate::ymd_hms(paste(date, time_appr))]
     setorder(x, nest, date)
   
-  # trap on
-    ton = x[!is.na(trap_on), .(nest, trap_on = TRUE)]
+  # last trap on date
+    ton = x[!is.na(trap_on), .(trap_on_date = max(date)), by = nest]
 
   # last last_clutch = last counted clutch. 
     x[, clutch_size := nafill(clutch_size, "locf")]

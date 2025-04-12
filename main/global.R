@@ -52,7 +52,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   hatch_pred_gam = "./data/gam_float_to_hach.rds"
 
 
-  nest_states = c(
+  nest_state_cols = c(
     "F"    = "#00815f",  
     "C"    = "#E69F00",  
     "I"    = "#fff023",  
@@ -64,7 +64,18 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     "notA" = "#4b4b4b"   
   )
 
-  # TODO: todo color scheme
+  todo_cols = c(
+    "catch M"    = "#0745cc",
+    "catch F"    = "#f33b0c",
+    "catch any"  = "#f38c38"
+  )
+
+  todo_symbols = c(
+      "nest check"  = 2,
+      "hatch check" = 5
+  )
+
+
 
 #! OPTIONS
   options(shiny.autoreload = TRUE)
