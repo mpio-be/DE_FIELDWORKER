@@ -76,6 +76,8 @@ map_todo <- function(n, size = 2.5 ) {
 
   x = extract_TODO(n)
   x = x[, todo_yn := !is.na(todo)]
+  x[, lab := glue_data(.SD, "{str_remove(nest, '^L')}[{round(min_days_to_hatch)}]")]
+  x[(!todo_yn | todo %in% 'nest check'), lab := str_remove(nest, "^L")]
   
   g = map_empty()
 
@@ -85,7 +87,7 @@ map_todo <- function(n, size = 2.5 ) {
       g +
 
       geom_text_repel(
-        data = x, aes(lon, lat, label = str_remove(nest, "^L"), color = todo_yn),
+        data = x, aes(lon, lat, label = lab, color = todo_yn),
         size = size * 0.8,
         , show.legend = FALSE
       ) +

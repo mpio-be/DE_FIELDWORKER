@@ -64,6 +64,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     "notA" = "#4b4b4b"   
   )
 
+  # TODO: todo color scheme
 
 #! OPTIONS
   options(shiny.autoreload = TRUE)

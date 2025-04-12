@@ -1,5 +1,6 @@
 shinyServer(function(input, output, session) {
 
+
 # For debugging only (assign input values to global environment)
   observe({on.exit(assign('input', reactiveValuesToList(input), envir = .GlobalEnv))})
 
@@ -120,46 +121,60 @@ shinyServer(function(input, output, session) {
   N <- reactive({
     if (input$main %in% c("nests_map", "live_nest_map", "todo_list", "todo_map")) {
 
-      n <- NESTS(.refdate = input$refdate)
-      
-      nolat <- n[is.na(lat)]
-      if (nrow(nolat) > 0) {
-        ErrToast(
-          glue("{paste(nolat$nest, collapse = ';')} without coordinates. Did you download all GPS units?")
-        )
+    n <- tryCatch(
+      NESTS(.refdate = input$refdate),
+      error = function(e) {
+        ErrToast(glue("Error fetching nests data. Maybe there are no nests on {input$refdate}?"))
+        return(NULL)
       }
-      n[, N := .N, nest]
-      doubleEntry <- n[N > 1]
-      if (nrow(doubleEntry) > 0) {
-        WarnToast(
-          glue("Nests with inconsistent states: {paste(unique(doubleEntry$nest), collapse = ';')}")
-        )
-      }
-      n
+    )
+
+    req(n)
+    
+    nolat <- n[is.na(lat)]
+    if (nrow(nolat) > 0) {
+      ErrToast(
+        glue("{paste(nolat$nest, collapse = ';')} without coordinates. Did you download all GPS units?")
+      )
+    }
+    n[, N := .N, nest]
+    doubleEntry <- n[N > 1]
+    if (nrow(doubleEntry) > 0) {
+      WarnToast(
+        glue("Nests with inconsistent states: {paste(unique(doubleEntry$nest), collapse = ';')}")
+      )
+    }
+    n
     }
   })
   
 # STATIC NESTS MAP
   output$map_nests_show <- renderPlot({
     n <- N()
-    req(n)
-    grandN <- nrow(n)
-    n <- subsetNESTS(n, state = input$nest_state)
-    map_nests(n, size = input$nest_size, grandTotal = grandN)
+    req(n )
+    map_nests(n[nest_state %in% input$nest_state],
+      size = input$nest_size, grandTotal = nrow(n)
+    )
   })
   
   output$map_nests_pdf <- downloadHandler(
+    
     filename = "map_nests.pdf",
+    
     content = function(file) {
       n <- N()
       req(n)
-      grandN <- nrow(n)
-      n <- subsetNESTS(n, state = input$nest_state)
       cairo_pdf(file = file, width = 11, height = 8.5)
-      print(map_nests(n, size = input$nest_size, grandTotal = grandN))
+      
+      print(
+        map_nests(n[nest_state %in% input$nest_state],
+          size = input$nest_size, grandTotal = nrow(n)
+        )
+      )
       dev.off()
-    }
-  )
+    
+    
+    })  
   
 # DYNAMIC NESTS MAP 
   leafmap <- leaflet_map()
@@ -189,7 +204,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-# TO-DO list
   output$todo_list_show <- DT::renderDataTable({
     n <- N() |> extract_TODO()
     req(n)

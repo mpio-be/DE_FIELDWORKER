@@ -15,7 +15,7 @@ x[ , rowid := .I]
 
 list(
 # Mandatory values
-  x[, .(species, date, cap_start, caught, released, capture_meth, form_id, author, ID, UL, UR, LL, LR, recapture, tarsus, culmen, total_head, wing, weight, wt_w_tag, sex_observed, rowid)] |>
+  x[, .(species, date, cap_start, caught, released, capture_meth, form_id, author, ID, UL, UR, LR, recapture, tarsus, culmen, total_head, wing, weight, wt_w_tag, sex_observed, rowid)] |>
   is.na_validator() |> try_validator(nam = 1)
   ,
 
@@ -37,28 +37,41 @@ list(
 ,
 # Reinforce values (from existing db tables or lists)
 {
-  z = x[, .(capture_meth, tag_action, tag_type, sex_observed, recapture)]
+  z = x[, .(capture_meth, tag_action, tagType, sex_observed, recapture)]
 
   v <- data.table(
     variable = names(z),
     set = c(
-      list(c("T", "M", "O")), # capture_meth
-      list(c("on", "off")),   # tag_action
-      list(c("D", "G")),   # tag_type
+      list(c("T", "M", "O")),   # capture_meth
+      list(c("on", "off")),     # tag_action
+      list(c("D", "G")),        # tagType
       list(c("F", "M", "U")),   # sex_observed
-      list(c(1, 0))           # recapture 
+      list(c(1, 0))             # recapture 
     )
   )
 
     is.element_validator(z, v)
-  } |> try_validator(nam = "fixed vals")
+  } |> try_validator(nam = "fixed values")
   ,
 
   x[, .(author, rowid)] |>
   is.element_validator(v = data.table(
       variable = "author",
       set = list(DBq("SELECT author ii FROM AUTHORS")$ii) ), 
-      reason = 'entry not in the AUTHORS table' ) |> try_validator(nam = 5)
+      reason = 'entry not in the AUTHORS table' ) |> try_validator(nam = "authors")
+  ,
+
+  x[, .(tagID, rowid)] |>
+  is.element_validator(v = data.table(
+      variable = "tagID",
+      set = list( 
+        c('122E','1232','124C','1257','125A','1228','1230','1259','127B','1156','1152',
+        '1254','122D','5503','5504','5505','5506','5507','5508','5509','5510','5511',
+        '5512','5513','5514','5515','5516','5517','8600','8601','8602','8606','8608',
+        '8611','8615','8666','8668','8670') 
+        ) 
+      ), 
+      reason = 'invalid tagID' ) |> try_validator(nam = 'tagID')
   ,
 
 
@@ -68,7 +81,7 @@ list(
       variable = "gps_id",
       set = list(1:15)
       ), 
-     reason = "GPS ID not in use") |> try_validator(nam = 6)
+  reason = "GPS ID not in use") |> try_validator(nam = 6)
   ,
 
 # time order
@@ -115,7 +128,7 @@ list(
       set = list(DBq("SELECT distinct ID FROM CAPTURES")$ID)
       ),
     reason = "Metal band already in use! Is this a recapture?"
-  ) |> try_validator(nam = 12)
+  ) |> try_validator(nam = "metal band")
   
   
 

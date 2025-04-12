@@ -25,7 +25,7 @@ list(
   x[nest_state == 'F', .(gps_id,gps_point,clutch_size, rowid)] |>
     is.na_validator("Mandatory when nest is found.")
   ,
-  x[nest_state %in% c("C", "pD", "pP", "D", "P"), .(gps_id,gps_point,clutch_size, rowid)] |>
+  x[nest_state %in% c("C", "pD", "pP", "D", "P"), .(clutch_size, rowid)] |>
     is.na_validator("Mandatory when nest is checked.")
   ,
 # Re-inforce formats
