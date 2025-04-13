@@ -2,7 +2,6 @@ map_empty <- function(x = OsterFeinerMoor ) {
   
   ggplot() +
     geom_sf(data = x, fill = NA, color = "#cacaca") +
-    ggtitle(format(Sys.time(), "%a, %d %b %y %H:%M")) +
     theme_minimal() +
     theme(
       panel.border    = element_blank(),
@@ -18,7 +17,7 @@ map_empty <- function(x = OsterFeinerMoor ) {
 #' d = NESTS()
 #' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
 #' map_nests(d)
-map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) { 
+map_nests <- function(d, size = 2.5, grandTotal = nrow(d) , .refdate = "yyyy-mm-dd") { 
   
   g = map_empty()
 
@@ -30,14 +29,18 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) {
   if (nrow(x) > 0) {
     g =
       g +
+      ggtext::geom_richtext(
+        aes(x = -Inf, y = Inf, 
+            label = 
+            glue("Reference date: {.refdate}<br>{grandTotal} nests, {nrow(x)} shown, {nrow(x[collected == 1])} collected clutches ◈")
+        ),
+        fill = NA, label.color = NA,
+        hjust = -0.05, vjust = 1.05, size = 3
+      ) +
+
       geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
       geom_point(data = x[collected == 1], aes(lon, lat), size = size + 0.2, shape = 5, inherit.aes = FALSE) +
       geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
-
-      labs(
-        subtitle =
-          glue("{grandTotal} nests, {nrow(x) } shown, {nrow(x[collected == 1])} collected clutches ◈")
-      ) +
 
       scale_color_manual(values = nest_state_cols, name = NULL) +
       scale_shape_manual(values = 5, name = NULL) +
@@ -60,7 +63,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) {
         legend.key             = element_blank(),            
         legend.box             = "horizontal",               
         legend.text            = element_text(size = 10), 
-        plot.subtitle          = element_text(size = 9, margin = margin(t = 20)) 
+        plot.subtitle          = element_text(size = 9, margin = margin(t = -10)) 
       )
   
   }
@@ -72,7 +75,8 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d)) {
 
 
 #' n = NESTS()
-map_todo <- function(n, size = 2.5 ) {
+#' map_todo(n)
+map_todo <- function(n, size = 2.5,.refdate = "yyyy-mm-dd" ) {
 
   x = extract_TODO(n)
   x = x[, todo_yn := !(is.na(todo_catch) & is.na(todo_check))]
@@ -84,6 +88,17 @@ map_todo <- function(n, size = 2.5 ) {
   g =   
   map_empty() +
 
+  ggtext::geom_richtext(
+    aes(x = -Inf, y = Inf, 
+        label = 
+        glue("Reference date: {.refdate}<br>
+        Catch at {nrow(x[!is.na(todo_catch)])} nests; Check {nrow(x[!is.na(todo_check)])} nests.")
+    ),
+    fill = NA, label.color = NA,
+    hjust = -0.05, vjust = 1.05, size = 4
+  ) +
+
+
   geom_text_repel(
     data = x, aes(lon, lat, label = lab, color = todo_yn),
     size = size * 0.8,
@@ -93,12 +108,13 @@ map_todo <- function(n, size = 2.5 ) {
 
   ggnewscale::new_scale_colour() +
 
-  geom_point(data = x , aes(lon, lat, color = todo_catch), size = size) +
+  geom_point(data = x , aes(lon, lat, color = todo_catch), size = size, alpha=  0.7) +
   
   geom_point(data = x[!is.na(todo_check)] , aes(lon, lat, shape = todo_check), size = size) +
   
   guides(
-    color = guide_legend(nrow = 2)
+    color = guide_legend(ncol = 1),
+    shape = guide_legend(ncol = 1)
   ) +
 
   scale_color_manual(values = todo_cols, name = NULL, na.translate = FALSE) +
@@ -109,12 +125,10 @@ map_todo <- function(n, size = 2.5 ) {
   xlab(NULL) + ylab(NULL) +
   
   theme(
-    legend.position        = "inside",
-    legend.position.inside = c(0.02, 0.98),
-    legend.justification   = c(0, 1),
+    legend.position        = "left",
     legend.background      = element_blank(),     
     legend.key             = element_blank(),            
-    legend.box             = "horizontal",               
+    legend.box             = "vertical",               
     legend.text            = element_text(size = 10), 
     plot.subtitle          = element_text(size = 9) 
   )

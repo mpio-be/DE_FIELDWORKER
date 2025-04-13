@@ -153,7 +153,9 @@ shinyServer(function(input, output, session) {
     n <- N()
     req(n )
     map_nests(n[nest_state %in% input$nest_state],
-      size = input$nest_size, grandTotal = nrow(n)
+      size = input$nest_size, 
+      grandTotal = nrow(n),
+      .refdate = input$refdate
     )
   })
   
@@ -168,7 +170,9 @@ shinyServer(function(input, output, session) {
       
       print(
         map_nests(n[nest_state %in% input$nest_state],
-          size = input$nest_size, grandTotal = nrow(n)
+          size = input$nest_size, 
+          grandTotal = nrow(n),
+          .refdate = input$refdate
         )
       )
       dev.off()
@@ -235,7 +239,7 @@ shinyServer(function(input, output, session) {
     
     n <- N()
     req(n)
-    map_todo(n, size = input$nest_size)
+    map_todo(n, size = input$nest_size, .refdate = input$refdate)
     
     })
 
@@ -247,7 +251,7 @@ shinyServer(function(input, output, session) {
       req(n)
 
       cairo_pdf(file = file, width = 11, height = 8.5)
-      map_todo(n, size = input$nest_size)
+      map_todo(n, size = input$nest_size, .refdate = input$refdate)
       dev.off()
     }
   )

@@ -62,7 +62,7 @@ bs4Dash::dashboardPage(
       sliderInput(
         inputId = "nest_size",
         label = "Text and symbol size:",
-        min = 3, max = 12, step = 0.5, value = 5
+        min = 3, max = 12, step = 0.5, value = 4
         )
       ,
 

@@ -17,6 +17,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
     "glue",
     "ggplot2",
     "ggrepel",
+    "ggtext", 
     "patchwork",
     
     "shinyWidgets",
