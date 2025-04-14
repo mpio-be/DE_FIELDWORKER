@@ -174,7 +174,8 @@ shinyServer(function(input, output, session) {
   output$todo_list_show <- DT::renderDataTable({
     n <- N() |> extract_TODO(.refdate = input$refdate)
     req(n)
-    n
+    o = n[, let(lat = NULL, lon = NULL)]
+    o
   },
   server        = FALSE,
   rownames      = TRUE,
