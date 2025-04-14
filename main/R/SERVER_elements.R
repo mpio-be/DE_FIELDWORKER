@@ -1,13 +1,19 @@
 
-TABLE_show <- function(table_nam, session) {
+TABLE_show <- function(x, session) {
   DT::renderDataTable({
     get_data <- reactivePoll(5000, 
-      session   =session,
+      session   = session,
       checkFunc = function() {
-        dbtable_is_updated(table_nam)
+        
+        dbtable_is_updated(x)
+      
       },
       valueFunc = function() {
-        DBq(glue("select * FROM {table_nam}"))[, ":="(pk = NULL, nov = NULL)] 
+        
+        if(is.character(x)){
+          return(showTable(x))
+        } else return(x)
+  
       }
     )
     get_data()
@@ -19,26 +25,29 @@ TABLE_show <- function(table_nam, session) {
   options       = list(
     dom         = "Blfrtip",
     buttons     = list("copy", list(
-      extend = "collection",
+      extend  = "collection",
       buttons = "excel",
-      text = "Download"
+      text    = "Download"
     )),
     scrollX     = "600px",
     deferRender = TRUE,
     scrollY     = 900,
     scroller    = TRUE,
     searching   = TRUE,
-    columnDefs  = list(list(className = "dt-center", targets = "_all"))
+    columnDefs  = list(
+      list(className = "dt-center", targets = "_all")
+      )
   ),
   class = c("compact", "stripe", "order-column", "hover")
   )
+
 }
   
 
 ErrToast <- function(msg){
   bs4Dash::toast(
     
-    title = "Moin!",
+    title = "Oops!",
     
     body = msg |> a(class = "text-primary font-weight-bold") |> h4(),
         
@@ -57,7 +66,7 @@ ErrToast <- function(msg){
 WarnToast <- function(msg){
   bs4Dash::toast(
     
-    title = "Moin!",
+    title = "Hi!",
     
     body = msg |> a(class = "text-primary font-weight-bold") |> h4(),
         

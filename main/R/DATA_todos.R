@@ -74,13 +74,11 @@ extract_TODO <- function(x, .refdate = input$refdate) {
       #TODO: if hatch_state contains CC, C then go process chicks. 
 
   # prepare final set
-  ll = 
+
   out = merge(catch, check, all = TRUE, , by = "nest")
 
 
   out = merge(out, o[,.(nest, lat,lon)] , by = "nest", all = TRUE)
-
-
 
   os = o[, .(nest, last_check_days_ago = lastCheck, last_clutch, last_brood = NA, last_state = nest_state, min_days_to_hatch)]
   out = merge(os, out, by = "nest", all.x = TRUE)

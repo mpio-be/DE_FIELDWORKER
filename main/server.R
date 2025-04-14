@@ -64,12 +64,6 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  output$dbdump <- downloadHandler(
-    filename = paste0(db, ".zip"),
-    content = function(file) {
-      dbTxtDump(zipfile = file)
-    }
-  )
   
 # VIEW DATA: Helper function to create DataTables
 

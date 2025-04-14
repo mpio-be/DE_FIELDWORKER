@@ -7,7 +7,7 @@ bs4Dash::dashboardPage(
     color = '#2aa8a0'
   ),
 
-  title = paste(app_nam, year(Sys.Date())),
+  title = glue('FIELDWORKER {ver}'),
   
   header = dashboardHeader(
     title = dashboardBrand(
@@ -141,7 +141,9 @@ bs4Dash::dashboardPage(
               tabPanel(
                 title = paste0("[", i, "]"),
                 active = FALSE,
-                DT::DTOutput(outputId = paste0(i, "_show"))
+                spinner( 
+                  DT::DTOutput(outputId = paste0(i, "_show"))
+                )  
               )
             })
           )
