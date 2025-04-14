@@ -1,23 +1,22 @@
 #' x = NESTS(DB = yr2dbnam(2024), .refdate = "2024-04-25")
 #' x = NESTS()
-#' z = extract_TODO(x)
-extract_TODO <- function(x) {
+#' z = extract_TODO(x,.refdate = input$refdate)
+extract_TODO <- function(x, .refdate = input$refdate) {
 
   #! ALL_RULES
   # "catch M", "catch F", "nest check", "hatch check" # and combinations of it
 
 
   o = x[!nest_state %in% c("P", "D", "notA")]
-  o[, last_trap := difftime(as.Date( input$refdate), as.Date(trap_on_date), units = "days")|>as.numeric()]
+  o[, last_trap := difftime(as.Date(.refdate), as.Date(trap_on_date), units = "days") |> as.numeric()]
+  o[, imminent_hatching := str_detect(hatch_state, "S|CC|\\bC\\b|[0-9]C")]
   
-  # TODO: add todo rules listing to ui
-
   # CATCH
     #! RULES
-      #! min_days_to_hatch <= 14
-      #! nest_state != 'H'
-      #! catch or caching attempt with one day break 
-      #TODO: hatch_state does not contain S, C, CC 
+      #* min_days_to_hatch <= 14
+      #* nest_state != 'H'
+      #* catch or caching attempt with one day break 
+      #* hatching did not start: hatch_state does not contain S, C, CC 
 
     # male
     cm = o[min_days_to_hatch <= 14 & nest_state != 'H', .(nest, M_cap, M_nest, last_trap)]
@@ -36,12 +35,15 @@ extract_TODO <- function(x) {
     catch = merge(cm, cf, by = 'nest' )
     catch[, todo_catch := paste(c(todo_catch.x, todo_catch.y) |> na.omit(), collapse = ", ") , by = .I]
     catch = catch[nchar(todo_catch) > 0, .(nest, todo_catch)]
-    catch[todo_catch == 'catch M, catch F', todo_catch := "catch any"]
+    catch[todo_catch == "catch M, catch F", todo_catch := "catch any"]
+    
+    catch = catch[!nest %in% o[imminent_hatching == TRUE]$nest]
+
 
   # NESTS CHECK
     #! RULES
-      #! if last check >=7
-      #! if nest_state = pD, pP
+      #* if last check >=7
+      #* if nest_state = pD, pP
 
     nc = o[
       lastCheck >= 7 |
@@ -51,8 +53,8 @@ extract_TODO <- function(x) {
 
 
   # HATCH CHECK
-    #! RULES
-      #! if min_days_to_hatch <= 4
+    #* RULES
+      #* if min_days_to_hatch <= 4
       #TODO: if eggs show no signs of hatch then do not check next day but in 2 days 
       #TODO: if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
       

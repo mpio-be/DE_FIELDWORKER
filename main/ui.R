@@ -3,9 +3,10 @@ bs4Dash::dashboardPage(
   dark = FALSE,
   help = NULL,
   preloader = list(
-    html = waiter::spin_loaders(id = 16, color = "#01125f"), 
-    color = "#b8c7c5"
+    html = waiter::spin_loaders(id = 16, color = "#1e3d24"), 
+    color = '#2aa8a0'
   ),
+
   title = paste(app_nam, year(Sys.Date())),
   
   header = dashboardHeader(

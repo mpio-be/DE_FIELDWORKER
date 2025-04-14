@@ -61,11 +61,14 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
 
     x[, lastDate := max(date), by = nest]
     x[, collected := any(nest_state == 'C'), nest]
-    
-
+  
   # last state (all nests); collected
     lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, nest_state, collected,lastDate)]
     lst[, lastCheck := difftime(as.Date(.refdate), lastDate, units = "days") |> as.numeric() |> round(1)]
+  
+  # hatch_state (all recorded hatch signs)
+    hst = x[str_detect(hatch_state, "[0-9]+(S|CC|C)"), .(nest, hatch_state = hatch_state)]
+    hst = hst[, .(hatch_state = paste(unique(hatch_state), collapse = ";")), by = nest]
 
 
   # lat, long, datetime_found
@@ -121,6 +124,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     o = merge(o, mfc1,   by = "nest", all.x = TRUE)
     o = merge(o, mfc2,   by = "nest", all.x = TRUE)
     o = merge(o, ton,    by = "nest", all.x = TRUE)
+    o = merge(o, hst,    by = "nest", all.x = TRUE)
     o = merge(o, d2h,    by = "nest", all.x = TRUE)
 
 

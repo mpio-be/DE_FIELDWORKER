@@ -86,7 +86,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d) , .refdate = "yyyy-mm-
 #' map_todo(n)
 map_todo <- function(n, size = 2.5,.refdate = "yyyy-mm-dd" ) {
 
-  x = extract_TODO(n)
+  x = extract_TODO(n, .refdate)
   x = x[, todo_yn := !(is.na(todo_catch) & is.na(todo_check))]
   
   x[, lab := glue_data(.SD, "{str_remove(nest, '^L')}^{{bold('{round(min_days_to_hatch)}')}}")]
