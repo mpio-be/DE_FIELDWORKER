@@ -1,4 +1,40 @@
 
+TABLE_show <- function(table_nam, session) {
+  DT::renderDataTable({
+    get_data <- reactivePoll(5000, 
+      session   =session,
+      checkFunc = function() {
+        dbtable_is_updated(table_nam)
+      },
+      valueFunc = function() {
+        DBq(glue("select * FROM {table_nam}"))[, ":="(pk = NULL, nov = NULL)] 
+      }
+    )
+    get_data()
+  },
+  server        = FALSE,
+  rownames      = FALSE,
+  escape        = FALSE,
+  extensions    = c("Scroller", "Buttons"),
+  options       = list(
+    dom         = "Blfrtip",
+    buttons     = list("copy", list(
+      extend = "collection",
+      buttons = "excel",
+      text = "Download"
+    )),
+    scrollX     = "600px",
+    deferRender = TRUE,
+    scrollY     = 900,
+    scroller    = TRUE,
+    searching   = TRUE,
+    columnDefs  = list(list(className = "dt-center", targets = "_all"))
+  ),
+  class = c("compact", "stripe", "order-column", "hover")
+  )
+}
+  
+
 ErrToast <- function(msg){
   bs4Dash::toast(
     
@@ -37,9 +73,6 @@ WarnToast <- function(msg){
 
 
 }
-
-
-
 
 # the last element of ...  can have length > 1
 startApp <- function(..., labels, host, isShiny = TRUE, class = "primary") {

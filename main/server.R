@@ -72,50 +72,18 @@ shinyServer(function(input, output, session) {
   )
   
 # VIEW DATA: Helper function to create DataTables
-  TABLE_show <- function(table_nam) {
-    DT::renderDataTable({
-      get_data <- reactivePoll(5000, session,
-        checkFunc = function() {
-          dbtable_is_updated(table_nam)
-        },
-        valueFunc = function() {
-          DBq(glue("select * FROM {table_nam}"))[, ":="(pk = NULL, nov = NULL)] 
-        }
-      )
-      get_data()
-    },
-    server        = FALSE,
-    rownames      = FALSE,
-    escape        = FALSE,
-    extensions    = c("Scroller", "Buttons"),
-    options       = list(
-      dom         = "Blfrtip",
-      buttons     = list("copy", list(
-        extend = "collection",
-        buttons = "excel",
-        text = "Download"
-      )),
-      scrollX     = "600px",
-      deferRender = TRUE,
-      scrollY     = 900,
-      scroller    = TRUE,
-      searching   = TRUE,
-      columnDefs  = list(list(className = "dt-center", targets = "_all"))
-    ),
-    class = c("compact", "stripe", "order-column", "hover")
-    )
-  }
+
   
 
-  output$AUTHORS_show             <- TABLE_show("AUTHORS")
-  output$CAPTURES_show            <- TABLE_show("CAPTURES")
-  output$CAPTURES_ARCHIVE_show    <- TABLE_show("CAPTURES_ARCHIVE")
-  output$RESIGHTINGS_show         <- TABLE_show("RESIGHTINGS")
-  output$CHICKS_show              <- TABLE_show("CHICKS")
-  output$NESTS_show               <- TABLE_show("NESTS")
-  output$EGGS_show                <- TABLE_show("EGGS")
-  output$SAMPLES_show             <- TABLE_show("SAMPLES")
-  output$COMBOS_show              <- TABLE_show("COMBOS")
+  output$AUTHORS_show             <- TABLE_show("AUTHORS", session)
+  output$CAPTURES_show            <- TABLE_show("CAPTURES", session)
+  output$CAPTURES_ARCHIVE_show    <- TABLE_show("CAPTURES_ARCHIVE", session)
+  output$RESIGHTINGS_show         <- TABLE_show("RESIGHTINGS", session)
+  output$CHICKS_show              <- TABLE_show("CHICKS", session)
+  output$NESTS_show               <- TABLE_show("NESTS", session)
+  output$EGGS_show                <- TABLE_show("EGGS", session)
+  output$SAMPLES_show             <- TABLE_show("SAMPLES", session)
+  output$COMBOS_show              <- TABLE_show("COMBOS", session)
   
 #- N: Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
@@ -207,7 +175,8 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
+# TO-DO list  
   output$todo_list_show <- DT::renderDataTable({
     n <- N() |> extract_TODO(.refdate = input$refdate)
     req(n)
