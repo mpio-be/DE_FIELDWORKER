@@ -70,7 +70,7 @@ list(
         '8600','8601','8602','8606','8608','8611','8615','8666','8668','8670'
         ) 
       ), 
-      reason = 'invalid tagID' ) |> try_validator(nam = 'tagID')
+      reason = 'invalid tagID' ) ) |> try_validator(nam = 'tagID')
   ,
 
   x[, .(gps_id, rowid)] |>
