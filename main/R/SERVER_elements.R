@@ -21,6 +21,7 @@ TABLE_show <- function(x, session) {
   server        = FALSE,
   rownames      = FALSE,
   escape        = FALSE,
+  selection     = "none", 
   extensions    = c("Scroller", "Buttons"),
   options       = list(
     dom         = "Blfrtip",

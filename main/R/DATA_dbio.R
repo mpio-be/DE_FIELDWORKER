@@ -34,10 +34,19 @@ showTable <- function(tab, exclude = c("pk", "nov"), formatDate = TRUE , ...) {
   }
   
   if ("comments" %in% cc$Field) {
+    
     o[!is.na(comments), comments := glue_data(
       .SD,
-      '<span title="{htmltools::htmlEscape(comments)}">{str_trunc(comments, 10, "right")}</span>'
+      HTML(
+        '<span class="custom-tooltip" 
+        data-tooltip="{htmltools::htmlEscape(
+          str_replace_all(comments, "(;|\\\\.)\\\\s|(;|\\\\.)$", "\\n"), 
+          attribute = TRUE)}">
+        {str_trunc(comments, 10, "right")}
+      </span>'
+      )
     ), by = .I]
+
   }
 
   o

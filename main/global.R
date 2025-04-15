@@ -8,26 +8,29 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 #! PACKAGES
   sapply(
     c(
-    "dbo",
-    "sf",
-    "data.table",
-    "stringr",
-    "forcats",
-    "zip",
-    "glue",
-    "ggplot2",
-    "ggrepel",
-    "ggtext", 
-    "patchwork",
-    
-    "shinyWidgets",
-    "bs4Dash",
-    "DT",
-    
-    "leaflet",
-    "leafem",
-    "leaflet.extras"
-  ), require, character.only = TRUE, quietly = TRUE)
+      "dbo",
+      "sf",
+      "data.table",
+      "stringr",
+      "forcats",
+      "zip",
+      "glue",
+      "ggplot2",
+      "ggrepel",
+      "ggtext",
+      "patchwork",
+      "shinyWidgets",
+      "bs4Dash",
+      "DT",
+      "leaflet",
+      "leafem",
+      "leaflet.extras"
+    ), require,
+    character.only = TRUE,
+    quietly = TRUE
+  )
+
+  # other packages: wadeR, configr
 
 # External data
   data(OsterFeinerMoor, package = "wadeR")
@@ -86,7 +89,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 
 #! UI DEFAULTS
   
-  ver                 = "2.0.8"
+  ver                 = "2.0.9"
   apptitle            = "DÜMMER-SEE"
   pagetitle           = apptitle
   set_capturedDaysAgo = 3

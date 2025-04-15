@@ -53,3 +53,47 @@ white-space: normal;
   position: relative;
   bottom: 3px;
 }
+
+
+.custom-tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.custom-tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 50%;
+  right: 105%; /* Position to the left */
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  z-index: 1000;
+  max-width: 350px; /* Wider box for more words per line */
+  min-width: 250px;
+  text-align: left;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
+/* Optional: add a subtle arrow pointing to the cell */
+.custom-tooltip:hover::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 95%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent rgba(0, 0, 0, 0.85) transparent transparent;
+}
+
+
+.custom-tooltip:hover::after {
+  white-space: pre-wrap;
+  content: attr(data-tooltip);
+}
