@@ -38,6 +38,8 @@ CREATE TABLE CAPTURES (
   tagID varchar(10)            DEFAULT NULL COMMENT  'tagID',
   tagType varchar(10)          DEFAULT NULL COMMENT  'D (druid), G (Global messenger)',
   tag_action varchar(10)       DEFAULT NULL COMMENT 'on (tag deployed) or off(tag removed)',
+  tag_action varchar(10)       DEFAULT NULL COMMENT 'on (tag deployed) or off(tag removed)',
+  harness DOUBLE               DEFAULT NULL COMMENT 'harness diameter (mm)',
 
   recapture BOOLEAN            DEFAULT NULL COMMENT '1(yes), 0(no)',
   
