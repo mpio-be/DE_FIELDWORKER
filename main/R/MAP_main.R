@@ -19,17 +19,26 @@ map_empty <- function(b = OsterFeinerMoor ) {
 }
 
 
-#' d = NESTS()
-#' d = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
-#' map_nests(d)
-map_nests <- function(d, size = 2.5, grandTotal = nrow(d) , .refdate = "yyyy-mm-dd") { 
+#' x = NESTS()
+#' x = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
+#' map_nests(x)
+map_nests <- function(x, size = 2.5, grandTotal = nrow(x) , .refdate = input$refdate) { 
   
+  if(! exists('input', envir = .GlobalEnv)) {
+    .refdate = as.character(Sys.Date())
+    warning('input not found, using ', Sys.Date()|>dQuote(), ' as reference.')
+  }
+
   g = map_empty()
 
-  x = d
   x[, nest := str_remove(nest, "^L")]
 
-  x[, LAB := glue_data(.SD, "{nest}", .na = "")]  
+  x[!is.na(F_cap) & is.na(M_cap) , capt := '♀']
+  x[is.na(F_cap)  & !is.na(M_cap), capt := '♂']
+  x[!is.na(F_cap) & !is.na(M_cap), capt := "⚤"]
+
+  x[, LAB := glue_data(.SD, "{nest}", .na = "")]
+  x[!is.na(capt), LAB := glue_data(.SD, "{nest}*{{bold('{capt}')}}" )]
 
   if (nrow(x) > 0) {
     g =
@@ -42,7 +51,8 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d) , .refdate = "yyyy-mm-
         Reference date: <span style='color:#e55a34'>{.refdate}</span>   <br>
         **{grandTotal}** nests, 
         **{nrow(x)}** shown, 
-        **{nrow(x[collected == 1])}** collected (◈) clutches ")
+        **{nrow(x[collected == 1])}** collected (◈) clutches <br>
+        Text: Nest ID ♀(female caugth), ♂(male caught),⚤ (male and female caught)")
       ),
       fill = NA, label.color = NA,
       hjust = -0.05, vjust = 1.05, size = 3
@@ -50,7 +60,7 @@ map_nests <- function(d, size = 2.5, grandTotal = nrow(d) , .refdate = "yyyy-mm-
 
     geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
     geom_point(data = x[collected == 1], aes(lon, lat), size = size + 0.1, shape = 5, inherit.aes = FALSE) +
-    geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size) +
+    geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size, parse = TRUE) +
 
     scale_color_manual(values = nest_state_cols, name = "Last\nstate") +
     scale_shape_manual(values = 5, name = "coll") +

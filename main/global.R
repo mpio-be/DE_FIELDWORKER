@@ -89,7 +89,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
 
 #! UI DEFAULTS
   
-  ver                 = "2.0.9"
+  ver                 = "2.1.0"
   apptitle            = "DÜMMER-SEE"
   pagetitle           = apptitle
   set_capturedDaysAgo = 3

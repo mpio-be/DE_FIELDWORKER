@@ -45,6 +45,11 @@ ALL_EGGS <- function(yy = years) {
 #' 
 NESTS <- function(DB = db, .refdate = input$refdate) {
   
+  if(! exists('input', envir = .GlobalEnv)) {
+    .refdate = as.character(Sys.Date())
+    warning('input not found, using ', Sys.Date()|>dQuote(), ' as reference.')
+  }
+
   # data
     x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
     x[, pk := NULL]
