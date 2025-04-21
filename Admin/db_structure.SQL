@@ -126,14 +126,19 @@ DROP TABLE IF EXISTS NESTS;
 CREATE TABLE NESTS (
   author varchar(3)            DEFAULT NULL COMMENT 'Initials (see authors file)',
   nest varchar(7)              DEFAULT NULL COMMENT 'Nest ID: SXYY, Where S is Species(the first letter of the species name), X=your GPS number, YY=your running nest number',
-  nest_state ENUM('F','C','I','pP','pD','H','notA')       DEFAULT NULL COMMENT '<b>F</b> (found), <b>C</b> (collected), <b>I</b> (Incubated, active nest, warm eggs), <b>(p)P</b> [(possibly)Predated], <b>(p)D</b> [(possibly)Deserted, cold eggs], <b>H</b> (hatched, received hatched chicks), <b>notA</b> (not Active, nest marks removed. )',
+  
+  nest_state ENUM('F','C','I','pP','pD','H','notA','D','P')
+  DEFAULT NULL COMMENT '<b>F</b> (found), <b>C</b> (collected), <b>I</b> (Incubated, active nest, warm eggs), <b>(p)P</b> [(possibly)Predated], <b>(p)D</b> [(possibly)Deserted, cold eggs], <b>H</b> (hatched, received hatched chicks), <b>notA</b> (not Active, nest marks removed), <b>D</b> (Deserted), <b>P</b> (Predated)',
+
   
   hatch_state varchar(50) DEFAULT NULL COMMENT 'No. of eggs(1-4) followed by egg state (N-no sign, S-star, C-crack,CC-multiple or a big crack). <br> E.g. 4N, 2N2S, 1N1S1C1CC ',
   
   bird_inc ENUM('M','F','U','E') DEFAULT NULL COMMENT ' M(male), F(female), U(unknown), E(nest empty, no one seen); this is usually done from the distance', 
   
   trap_on ENUM('Y') DEFAULT NULL COMMENT 'Was a trap installed on the nest? Y (yes) or leave blank.', 
-  
+   `cap_fail`
+  cap_fail ENUM('tech','no-show','spooked', 'other') NULL COMMENT 'Capture failure: technical, no-show,spooked or other. If `other` specify in the comments',
+
 
   gps_id int(2)                DEFAULT NULL COMMENT 'GPS ID (recorded when nest is found)',
   gps_point int(3)             DEFAULT NULL COMMENT 'GPS waypoint (recorded when nest is found)',
@@ -160,9 +165,6 @@ CREATE TABLE NESTS (
 
 
 -- post deploy updates
-ALTER TABLE NESTS 
-MODIFY COLUMN nest_state ENUM('F','C','I','pP','pD','H','notA','D','P')
-DEFAULT NULL COMMENT '<b>F</b> (found), <b>C</b> (collected), <b>I</b> (Incubated, active nest, warm eggs), <b>(p)P</b> [(possibly)Predated], <b>(p)D</b> [(possibly)Deserted, cold eggs], <b>H</b> (hatched, received hatched chicks), <b>notA</b> (not Active, nest marks removed), <b>D</b> (Deserted), <b>P</b> (Predated)';
 
 
 DROP TABLE IF EXISTS EGGS;
@@ -236,13 +238,12 @@ CREATE TABLE SAMPLES (
   ) ENGINE=ARIA DEFAULT CHARACTER SET utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-  INSERT INTO COMBOS (UL, UR) VALUES ('N,R','R,N'),('N,B','R,N'),('N,G','R,N'),('N,N','R,N'),('N,Y','R,N'),('N,R','R,Y'),('N,B','R,Y'),('N,G','R,Y'),('N,N','R,Y'),('N,Y','R,Y'),('N,B','R,B'),('N,G','R,B'),('N,N','R,B'),('N,Y','R,B'),('N,R','Y,N'),('N,B','Y,N'),('N,G','Y,N'),('N,N','Y,N'),('N,Y','Y,N'),('N,R','Y,G'),('N,B','Y,G'),('N,G','Y,G'),('N,N','Y,G'),('N,Y','Y,G'),('N,R','Y,B'),('N,B','Y,B'),('N,G','Y,B'),('N,N','Y,B'),('N,Y','Y,B'),('B,R','R,N'),('B,G','R,Y'),('B,N','R,Y'),('B,Y','R,Y'),('B,R','R,B'),('B,B','R,B'),('B,G','R,B'),('B,N','R,B'),('B,Y','R,B'),('B,R','Y,N'),('B,B','Y,N'),('B,G','Y,N'),('B,N','Y,N'),('B,Y','Y,N'),('B,R','Y,G'),('B,B','Y,G'),('B,G','Y,G'),('B,N','Y,G'),('B,Y','Y,G'),('B,R','Y,B'),('B,B','Y,B'),('B,G','Y,B'),('B,N','Y,B'),('B,Y','Y,B'),('G,R','R,N'),('G,N','R,N'),('G,Y','R,N'),('G,R','R,Y'),('G,Y','R,Y'),('G,B','R,B'),('G,G','R,B'),('G,N','R,B'),('G,Y','R,B'),('G,R','Y,N'),('G,B','Y,N'),('G,G','Y,N'),('G,N','Y,N'),('G,Y','Y,N'),('G,R','Y,G'),('G,B','Y,G'),('G,G','Y,G'),('G,N','Y,G'),('G,Y','Y,G'),('G,R','Y,B'),('G,B','Y,B'),('G,G','Y,B'),('G,N','Y,B'),('G,Y','Y,B'),('R,G','R,N'),('R,N','R,N'),('R,R','R,B'),('R,B','R,B'),('R,N','R,B'),('R,Y','R,B'),('R,R','Y,N'),('R,B','Y,N'),('R,G','Y,N'),('R,N','Y,N'),('R,Y','Y,N'),('R,R','Y,G'),('R,B','Y,G'),('R,G','Y,G'),('R,N','Y,G'),('R,Y','Y,G'),('R,R','Y,B'),('R,B','Y,B'),('R,G','Y,B'),('R,N','Y,B'),('R,Y','Y,B'),('Y,R','R,N'),('Y,B','R,N'),('Y,G','R,N'),('Y,N','R,N'),('Y,Y','R,N'),('Y,R','R,Y'),('Y,B','R,Y'),('Y,G','R,Y'),('Y,N','R,Y'),('Y,Y','R,Y'),('Y,R','R,B'),('Y,B','R,B'),('Y,G','R,B'),('Y,N','R,B'),('Y,Y','R,B'),('Y,R','Y,N'),('Y,B','Y,N'),('Y,G','Y,N'),('Y,N','Y,N'),('Y,Y','Y,N'),('Y,R','Y,G'),('Y,B','Y,G'),('Y,G','Y,G'),('Y,N','Y,G'),('Y,Y','Y,G'),('Y,R','Y,B'),('Y,B','Y,B'),('Y,G','Y,B'),('Y,N','Y,B'),('Y,Y','Y,B');
+  INSERT INTO COMBOS (UL, UR) 
+    VALUES ('N,R','R,N'),('N,B','R,N'),('N,G','R,N'),('N,N','R,N'),('N,Y','R,N'),('N,R','R,Y'),('N,B','R,Y'),('N,G','R,Y'),('N,N','R,Y'),('N,Y','R,Y'),('N,B','R,B'),('N,G','R,B'),('N,N','R,B'),('N,Y','R,B'),('N,R','Y,N'),('N,B','Y,N'),('N,G','Y,N'),('N,N','Y,N'),('N,Y','Y,N'),('N,R','Y,G'),('N,B','Y,G'),('N,G','Y,G'),('N,N','Y,G'),('N,Y','Y,G'),('N,R','Y,B'),('N,B','Y,B'),('N,G','Y,B'),('N,N','Y,B'),('N,Y','Y,B'),('B,R','R,N'),('B,G','R,Y'),('B,N','R,Y'),('B,Y','R,Y'),('B,R','R,B'),('B,B','R,B'),('B,G','R,B'),('B,N','R,B'),('B,Y','R,B'),('B,R','Y,N'),('B,B','Y,N'),('B,G','Y,N'),('B,N','Y,N'),('B,Y','Y,N'),('B,R','Y,G'),('B,B','Y,G'),('B,G','Y,G'),('B,N','Y,G'),('B,Y','Y,G'),('B,R','Y,B'),('B,B','Y,B'),('B,G','Y,B'),('B,N','Y,B'),('B,Y','Y,B'),('G,R','R,N'),('G,N','R,N'),('G,Y','R,N'),('G,R','R,Y'),('G,Y','R,Y'),('G,B','R,B'),('G,G','R,B'),('G,N','R,B'),('G,Y','R,B'),('G,R','Y,N'),('G,B','Y,N'),('G,G','Y,N'),('G,N','Y,N'),('G,Y','Y,N'),('G,R','Y,G'),('G,B','Y,G'),('G,G','Y,G'),('G,N','Y,G'),('G,Y','Y,G'),('G,R','Y,B'),('G,B','Y,B'),('G,G','Y,B'),('G,N','Y,B'),('G,Y','Y,B'),('R,G','R,N'),('R,N','R,N'),('R,R','R,B'),('R,B','R,B'),('R,N','R,B'),('R,Y','R,B'),('R,R','Y,N'),('R,B','Y,N'),('R,G','Y,N'),('R,N','Y,N'),('R,Y','Y,N'),('R,R','Y,G'),('R,B','Y,G'),('R,G','Y,G'),('R,N','Y,G'),('R,Y','Y,G'),('R,R','Y,B'),('R,B','Y,B'),('R,G','Y,B'),('R,N','Y,B'),('R,Y','Y,B'),('Y,R','R,N'),('Y,B','R,N'),('Y,G','R,N'),('Y,N','R,N'),('Y,Y','R,N'),('Y,R','R,Y'),('Y,B','R,Y'),('Y,G','R,Y'),('Y,N','R,Y'),('Y,Y','R,Y'),('Y,R','R,B'),('Y,B','R,B'),('Y,G','R,B'),('Y,N','R,B'),('Y,Y','R,B'),('Y,R','Y,N'),('Y,B','Y,N'),('Y,G','Y,N'),('Y,N','Y,N'),('Y,Y','Y,N'),('Y,R','Y,G'),('Y,B','Y,G'),('Y,G','Y,G'),('Y,N','Y,G'),('Y,Y','Y,G'),('Y,R','Y,B'),('Y,B','Y,B'),('Y,G','Y,B'),('Y,N','Y,B'),('Y,Y','Y,B');
   UPDATE COMBOS SET LR = 'M';
 
 
 -- CAPTURES_ARCHIVE
-
-
 DROP TABLE IF EXISTS CAPTURES_ARCHIVE;
 CREATE TABLE CAPTURES_ARCHIVE (
   date date                    DEFAULT NULL COMMENT 'Date caught YYYY-MM-DD',
@@ -276,6 +277,13 @@ CREATE TABLE CAPTURES_ARCHIVE (
       tagID,
       'D' as tagType
   FROM FIELD_2024_NOLAatDUMMERSEE.CAPTURES;
+
+-- todo_white_list
+CREATE TABLE IF NOT EXISTS todo_white_list (
+  `variable` VARCHAR(50)    DEFAULT NULL COMMENT 'Column name from TODO table to whitelist',
+  `value`    VARCHAR(50)    DEFAULT NULL COMMENT 'Value for that variable (e.g. nest, color combo)'
+) ENGINE=ARIA;
+
 
 
 -- VIEWS
