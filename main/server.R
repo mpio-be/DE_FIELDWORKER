@@ -80,7 +80,7 @@ shinyServer(function(input, output, session) {
   output$COMBOS_show              <- TABLE_show("COMBOS", session)
 
   
-#- N: Reactive for NESTS data (only update when one of the nest-related tabs is active)
+#+ N: Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({
     if (input$main %in% c("nests_map", "live_nest_map", "todo_list", "todo_map")) {
 
@@ -225,21 +225,56 @@ shinyServer(function(input, output, session) {
 # Overview
   output$overview_show <- renderPlot({
 
-    x = ALL_EGGS()
-    x[, year := year(date)]
-    x[, Date := update(min_pred_hatch_date, year = 2000) - 26 - 4]
-    
-    rdate = as.Date(input$refdate) |> update(year = 2000)
+    # first egg
+      x = ALL_EGGS()
+      x[, year := factor(year(date))]
+      x[, Date := update(min_pred_hatch_date, year = 2000) - 26 - 4]
+      
+      rdate = as.Date(input$refdate) |> update(year = 2000)
 
-    ggplot(x, aes(x = Date)) +
-      geom_histogram(binwidth = 2, fill = "#4f634c", color = "black") +
-      facet_wrap(~year) +
-      geom_vline(xintercept = rdate, col = "#d35400", size = 1.5) +
-      ggtitle("First egg date") +
-      scale_x_date(date_labels = "%b %d", date_breaks = "1 day") +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14))
+      g1 = ggplot(x, aes(x = Date, fill = year)) +
+        geom_histogram(binwidth = 2, position = "dodge") +
+        geom_vline(xintercept = rdate, col = "#001346", linewidth = 1.5) +
+        ggtitle("First egg date") + xlab("") + ylab("") +
+        scale_x_date(date_labels = "%b %d", date_breaks = "3 day") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14)) +
+        theme_bw() +
+        theme(
+          axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
+          legend.position = "inside",
+          legend.position.inside = c(1, 1),
+          legend.justification = c("right", "top"),
+          legend.background = element_rect(fill = alpha("white", 0.7), color = NA)
+        )
 
+      # N nests by author
+        x = DBq("SELECT DISTINCT n.nest, a.author
+                  FROM AUTHORS a
+                  LEFT JOIN NESTS n ON n.author = a.author
+                    WHERE n.nest_state = 'F' OR n.nest IS NULL", .db = DB)
+        x = x[, .N, author]
+        x[N ==1, N := 0]
 
+        g2 = 
+        ggplot(x, aes(x = fct_reorder(author, -N), y = N)) +
+        geom_col(fill = "#ad7100", color = "black") +
+        labs(x = "Author", y = "N nests") +
+        theme_minimal(base_size = 14)
+
+      # bypass validation rate
+        x = DBq("SELECT author, nov FROM NESTS", .db = DB) 
+        x = x[, .N, .(author, nov)] |> dcast(author ~ nov, value.var = "N")
+        x[is.na(`1`), `1` := 0]
+        x[, Bypass_validation_rate := `1`/(`1` + `0`)]
+
+        g3 = 
+        ggplot(x, aes(x = fct_reorder(author, -Bypass_validation_rate), y = Bypass_validation_rate)) +
+        geom_col(fill = "#5b016d", color = "black") +
+        labs(x = "Author", y = "Bypass validation rate") +
+        scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+        theme_minimal(base_size = 14)
+
+        g1 + g2 + g3
 
   })
 

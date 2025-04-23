@@ -18,7 +18,6 @@ map_empty <- function(b = OsterFeinerMoor ) {
 
 }
 
-
 #' x = NESTS()
 #' x = NESTS(DB = "FIELD_2024_NOLAatDUMMERSEE", .refdate = "2024-04-26")[!is.na(lat)]
 #' map_nests(x)
@@ -40,57 +39,59 @@ map_nests <- function(x, size = 2.5, grandTotal = nrow(x) , .refdate = input$ref
   x[, LAB := glue_data(.SD, "{nest}", .na = "")]
   x[!is.na(capt), LAB := glue_data(.SD, "{nest}*{{bold('{capt}')}}" )]
 
-  if (nrow(x) > 0) {
-    g =
-      
-    g +
-    ggtext::geom_richtext(
-      aes(x = -Inf, y = Inf, 
-        label = 
-        glue("
-        Reference date: <span style='color:#e55a34'>{.refdate}</span>   <br>
-        **{grandTotal}** nests, 
-        **{nrow(x)}** shown, 
-        **{nrow(x[collected == 1])}** collected (◈) clutches <br>
-        Text: Nest ID ♀(female caugth), ♂(male caught),⚤ (male and female caught)")
-      ),
-      fill = NA, label.color = NA,
-      hjust = -0.05, vjust = 1.05, size = 3
-    ) +
 
-    geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
-    geom_point(data = x[collected == 1], aes(lon, lat), size = size + 0.1, shape = 5, inherit.aes = FALSE) +
-    geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size, parse = TRUE) +
-
-    scale_color_manual(values = nest_state_cols, name = "Last\nstate") +
-    scale_shape_manual(values = 5, name = "coll") +
-
-    xlab(NULL) +
-    ylab(NULL) +
-
-    guides(
-      color = guide_legend(ncol = 1),
-      shape = guide_legend(ncol = 1)
-    ) +
+  g =
     
-    theme(
-      legend.position        = "left",
-      legend.background      = element_blank(),     
-      legend.key             = element_blank(),            
-      legend.box             = "vertical",               
-      legend.text            = element_text(size = 10),
-      legend.margin        = margin(0, 0, 0, 0),
-      legend.spacing.x     = unit(0, "cm"),
-      legend.spacing.y     = unit(0, "cm")
-    )
+  g +
+  ggtext::geom_richtext(
+    aes(x = -Inf, y = Inf, 
+      label = 
+      glue("
+      Reference date: <span style='color:#e55a34'>{.refdate}</span>   <br>
+      **{grandTotal}** nests, 
+      **{nrow(x)}** shown, 
+      **{nrow(x[collected == 1])}** collected (◈) clutches <br>
+      Text: Nest ID ♀(female caugth), ♂(male caught),⚤ (male and female caught) <br>
+      <span style='color: red;'>&#x2022;</span>: last check > 3 days ago."
+      )
+    ),
+    fill = NA, label.color = NA,
+    hjust = -0.05, vjust = 1.05, size = 3
+  ) +
+
+  geom_point(data = x, aes(lon, lat, color = nest_state), size = size) +
+  geom_point(data = x[lastCheck >3], aes(lon, lat), size = 0.8, col = 'red', inherit.aes = FALSE) +
+  geom_point(data = x[collected == 1], aes(lon, lat), size = size + 0.1, shape = 5, inherit.aes = FALSE) +
+  geom_text_repel(data = x, aes(lon, lat, label = LAB), size = size, parse = TRUE) +
+
+  scale_color_manual(values = nest_state_cols, name = "Last\nstate") +
+  scale_shape_manual(values = 5, name = "coll") +
+
+  xlab(NULL) +
+  ylab(NULL) +
+
+  guides(
+    color = guide_legend(ncol = 1),
+    shape = guide_legend(ncol = 1)
+  ) +
   
-  }
+  theme(
+    legend.position        = "left",
+    legend.background      = element_blank(),     
+    legend.key             = element_blank(),            
+    legend.box             = "vertical",               
+    legend.text            = element_text(size = 10),
+    legend.margin        = margin(0, 0, 0, 0),
+    legend.spacing.x     = unit(0, "cm"),
+    legend.spacing.y     = unit(0, "cm")
+  )
+
+
 
 
   print(g)
 
 }
-
 
 #' n = NESTS()
 #' map_todo(n)
