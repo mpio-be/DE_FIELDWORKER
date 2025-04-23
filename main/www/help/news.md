@@ -19,7 +19,7 @@
 #### HATCH CHECKS
 
 * Check the nest if `min_days_to_hatch` is **4 or fewer days**
-* If there are no visible signs of hatching, wait **two days** before the next check (instead of checking daily)
+* If there are no visible signs of hatching and the nest was checked today, wait **two days** before the next check (instead of checking daily).
 * If **not all chicks have hatched**, check again (based on `hatch_state`, `brood_size`, and `clutch_size`)
 
 #### CHICK PROCESSING
