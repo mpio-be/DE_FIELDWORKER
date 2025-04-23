@@ -78,6 +78,7 @@ shinyServer(function(input, output, session) {
   output$EGGS_show                <- TABLE_show("EGGS", session)
   output$SAMPLES_show             <- TABLE_show("SAMPLES", session)
   output$COMBOS_show              <- TABLE_show("COMBOS", session)
+
   
 #- N: Reactive for NESTS data (only update when one of the nest-related tabs is active)
   N <- reactive({

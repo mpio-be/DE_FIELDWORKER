@@ -111,8 +111,9 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     }
 
   # days to hatching
-    x = DBq(glue("SELECT nest, date, float_angle, surface FROM EGGS
-              WHERE date <= {shQuote(.refdate)}"), .db = DB)
+  x = DBq(glue("SELECT nest, date, float_angle, surface FROM EGGS
+              WHERE date <= {shQuote(.refdate)}
+              AND float_angle IS NOT NULL"), .db = DB)
     d2h = hatching_prediction(x, .gampath = hatch_pred_gam)
     d2h = d2h[, .(
       min_days_to_hatch_at_found = median(conf.low, na.rm = TRUE),

@@ -101,5 +101,11 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
       source = c("INC", "DF", "BW", "O"), 
       strict = TRUE
     ) |>
+    hot_col(
+      col    = "cap_fail", 
+      type   = "autocomplete",
+      source = c('tech','no-show','spooked', 'other'), 
+      strict = TRUE
+    ) |>
 
     hot_rows(fixedRowsTop = 1) 
