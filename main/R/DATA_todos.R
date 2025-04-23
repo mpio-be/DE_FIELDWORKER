@@ -1,3 +1,4 @@
+
 #' x = NESTS(DB = yr2dbnam(2024), .refdate = "2024-04-25")
 #' x = NESTS()
 #' z = extract_TODO(x,.refdate = input$refdate)
@@ -13,10 +14,10 @@ extract_TODO <- function(x, .refdate = input$refdate) {
   
   # CATCH
     #! RULES
-      #* min_days_to_hatch <= 14
-      #* nest_state != 'H'
-      #* catch or caching attempt with one day break 
-      #* hatching did not start: hatch_state does not contain S, C, CC 
+      #+ min_days_to_hatch <= 14
+      #+ nest_state != 'H'
+      #+ catch or caching attempt with one day break 
+      #+ hatching did not start: hatch_state does not contain S, C, CC 
 
     # male
     cm = o[min_days_to_hatch <= 14 & nest_state != 'H', .(nest, M_cap, M_nest, last_trap)]
@@ -42,8 +43,8 @@ extract_TODO <- function(x, .refdate = input$refdate) {
 
   # NESTS CHECK
     #! RULES
-      #* if last check >=7
-      #* if nest_state = pD, pP
+      #+ if last check >=7
+      #+ if nest_state = pD, pP
 
     nc = o[
       lastCheck >= 7 |
@@ -53,16 +54,18 @@ extract_TODO <- function(x, .refdate = input$refdate) {
 
 
   # HATCH CHECK
-    #* RULES
-      #* if min_days_to_hatch <= 4
-      #TODO: if eggs show no signs of hatch then do not check next day but in 2 days 
-      #TODO: if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
+    #+ RULES
+      #+ if min_days_to_hatch <= 4
+      #+ if eggs show no signs of hatch today then do not check next day but in 2 days 
+      #+ if not all chicks hatched (using, hatch_state, brood_size, clutch_size)
       
     hc = o[
       ! collected & 
       min_days_to_hatch <= 4,
-      .(nest, todo_check = "hatch check")
+      .(nest, lastCheck, imminent_hatching, last_clutch, last_brood, todo_check = "hatch check")
     ] |> unique()
+    hc = hc[lastCheck >= 1 | (imminent_hatching) | (last_brood > 0 & last_clutch > 0)]
+    hc = hc[, .(nest, todo_check)]
     
     check = merge(nc, hc, by = "nest", all = TRUE, suffixes = c("", "_hatch"))
     check[!is.na(todo_check_hatch), todo_check := todo_check_hatch]
@@ -71,7 +74,7 @@ extract_TODO <- function(x, .refdate = input$refdate) {
     
   # CHICK PROCESSING
     #! RULES
-      #TODO: if hatch_state contains CC, C then go process chicks. 
+      #TODO ?: if hatch_state contains CC, C then go process chicks. 
 
   # prepare final set
 

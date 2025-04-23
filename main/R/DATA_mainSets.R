@@ -68,7 +68,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     x[, collected := any(nest_state == 'C'), nest]
   
   # last state (all nests); collected
-    lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, nest_state, collected,lastDate)]
+    lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, last_brood = brood_size, nest_state,collected,lastDate)]
     lst[, lastCheck := difftime(as.Date(.refdate), lastDate, units = "days") |> as.numeric() |> round(1)]
   
   # hatch_state (all recorded hatch signs)
