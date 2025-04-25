@@ -55,21 +55,27 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     x[, pk := NULL]
     x = unique(x)
 
-    x[, date := lubridate::ymd_hms(paste(date, time_appr))]
+    x[, date := as.Date(date) |>as.POSIXct()]
     setorder(x, nest, date)
   
   # last trap on date
     ton = x[!is.na(trap_on), .(trap_on_date = max(date)), by = nest]
 
-  # last last_clutch = last counted clutch. 
+  # last handon check
+    lhond = x[!is.na(clutch_size), .(lastHandsonDate = max(date)), by = nest]
+    lhond[, lastHandsonCheck := difftime(as.Date(.refdate), lastHandsonDate, units = "days") |> as.numeric() |> round(1)]
+    
+  # last last_clutch = last counted clutch.
     x[, clutch_size := nafill(clutch_size, "locf")]
 
-    x[, lastDate := max(date), by = nest]
+    x[, lastDate := max(date) , by = nest]
+
     x[, collected := any(nest_state == 'C'), nest]
   
   # last state (all nests); collected
     lst =  x[date == lastDate, .(nest, last_clutch = clutch_size, last_brood = brood_size, nest_state,collected,lastDate)]
     lst[, lastCheck := difftime(as.Date(.refdate), lastDate, units = "days") |> as.numeric() |> round(1)]
+    lst = merge(lst, lhond, by = "nest")
   
   # hatch_state (all recorded hatch signs)
     hst = x[str_detect(hatch_state, "[0-9]+(S|CC|C)"), .(nest, hatch_state = hatch_state)]

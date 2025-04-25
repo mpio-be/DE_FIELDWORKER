@@ -62,9 +62,9 @@ extract_TODO <- function(x, .refdate = input$refdate) {
     hc = o[
       ! collected & 
       min_days_to_hatch <= 4,
-      .(nest, lastCheck, imminent_hatching, last_clutch, last_brood, todo_check = "hatch check")
+      .(nest, lastHandsonCheck, imminent_hatching, last_clutch, last_brood, todo_check = "hatch check")
     ] |> unique()
-    hc = hc[lastCheck >= 1 | (imminent_hatching) | (last_brood > 0 & last_clutch > 0)]
+    hc = hc[lastHandsonCheck >= 1 | (imminent_hatching) | (last_brood > 0 & last_clutch > 0)]
     hc = hc[, .(nest, todo_check)]
     
     check = merge(nc, hc, by = "nest", all = TRUE, suffixes = c("", "_hatch"))
@@ -83,7 +83,15 @@ extract_TODO <- function(x, .refdate = input$refdate) {
 
   out = merge(out, o[,.(nest, lat,lon)] , by = "nest", all = TRUE)
 
-  os = o[, .(nest, last_check_days_ago = lastCheck, last_clutch, last_brood = NA, last_state = nest_state, min_days_to_hatch)]
+  os = o[, .(
+    nest,
+    last_check_days_ago = lastCheck, 
+    last_handson_check  = lastHandsonCheck, 
+    last_clutch, 
+    last_brood, 
+    last_state = nest_state, 
+    min_days_to_hatch
+  )]
   out = merge(os, out, by = "nest", all.x = TRUE)
   setcolorder(out, c("todo_catch", "todo_check"), after = "nest")
   
