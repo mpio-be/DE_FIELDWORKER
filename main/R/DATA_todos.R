@@ -72,10 +72,6 @@ extract_TODO <- function(x, .refdate = input$refdate) {
     check = check[nchar(todo_check) > 0, .(nest, todo_check)]
 
     
-  # CHICK PROCESSING
-    #! RULES
-      #TODO ?: if hatch_state contains CC, C then go process chicks. 
-
   # prepare final set
 
   out = merge(catch, check, all = TRUE, , by = "nest")
