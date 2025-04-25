@@ -251,7 +251,7 @@ shinyServer(function(input, output, session) {
         x = DBq("SELECT DISTINCT n.nest, a.author
                   FROM AUTHORS a
                   LEFT JOIN NESTS n ON n.author = a.author
-                    WHERE n.nest_state = 'F' OR n.nest IS NULL", .db = DB)
+                    WHERE n.nest_state = 'F' OR n.nest IS NULL", .db = db)
         x = x[, .N, author]
         x[N ==1, N := 0]
 
@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
         theme_minimal(base_size = 14)
 
       # bypass validation rate
-        x = DBq("SELECT author, nov FROM NESTS", .db = DB) 
+        x = DBq("SELECT author, nov FROM NESTS", .db = db) 
         x = x[, .N, .(author, nov)] |> dcast(author ~ nov, value.var = "N")
         x[is.na(`1`), `1` := 0]
         x[, Bypass_validation_rate := `1`/(`1` + `0`)]
