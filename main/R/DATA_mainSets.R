@@ -48,7 +48,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
   if(! exists('input', envir = .GlobalEnv)) {
     .refdate = as.character(Sys.Date())
     warning('input not found, using ', Sys.Date()|>dQuote(), ' as reference.')
-  }
+    }
 
   # data
     x = DBq(glue("SELECT *  FROM NESTS WHERE date <= {shQuote(.refdate)}"), .db = DB)
@@ -93,12 +93,30 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     gps = gps[, .(lat = mean(lat), lon = mean(lon), datetime_found = min(datetime_found)), .(nest)]
 
   # male, female COMBO
-    # from nests (keep only proper combos, M only is excluded!)
-    f = x[apply(x[, .SD, .SDcols = patterns("^f_")], 1,  function(x) any(str_detect(x, ","), na.rm = TRUE))]
-    f = f[,F_nest := make_combo(.SD, UL = "f_UL", LL = "f_LL", UR = "f_UR", LR = "f_LR")][, .(nest, F_nest)]
-
-    m = x[apply(x[, .SD, .SDcols = patterns("^m_")], 1,  function(x) any(str_detect(x, ","), na.rm = TRUE))]
-    m = m[,M_nest := make_combo(.SD, UL = "m_UL", LL = "m_LL", UR = "m_UR", LR = "m_LR")][, .(nest, M_nest)]
+    # from nests
+    f = x[, .SD, .SDcols = patterns("^f_|nest$")]
+    f[, n := sum(!is.na(.SD)), by = .I, .SDcols = patterns("^f_")]
+    f = f[n > 0]
+    # at least one proper combo (Metal only is excluded like this)
+    f[, anyOK := any(str_detect(.SD, ","), na.rm = TRUE), by = .I, .SDcols = patterns("^f_")]
+    f = f[(anyOK)]
+    f = f[, maxn := max(n), by = nest]
+    # keep the most complete combo
+    f = f[n == maxn]
+    f = f[,F_nest := make_combo(.SD, UL = "f_UL", LL = "f_LL", UR = "f_UR", LR = "f_LR")]
+    f = f[, .(nest, F_nest)]
+    
+    m = x[, .SD, .SDcols = patterns("^m_|nest$")]
+    m[, n := sum(!is.na(.SD)), by = .I, .SDcols = patterns("^m_")]
+    m = m[n > 0]
+    # at least one proper combo (Metal only is excluded like this)
+    m[, anyOK := any(str_detect(.SD, ","), na.rm = TRUE), by = .I, .SDcols = patterns("^m_")]
+    m = m[(anyOK)]
+    m = m[, maxn := max(n), by = nest]
+    # keep the most complete combo
+    m = m[n == maxn]
+    m = m[,M_nest := make_combo(.SD, UL = "m_UL", LL = "m_LL", UR = "m_UR", LR = "m_LR")]
+    m = m[, .(nest, M_nest)]
 
     mfc1 = merge(m, f, by = "nest", all = TRUE)
     
@@ -118,7 +136,7 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
     }
 
   # days to hatching
-  x = DBq(glue("SELECT nest, date, float_angle, surface FROM EGGS
+    x = DBq(glue("SELECT nest, date, float_angle, surface FROM EGGS
               WHERE date <= {shQuote(.refdate)}
               AND float_angle IS NOT NULL"), .db = DB)
     d2h = hatching_prediction(x, .gampath = hatch_pred_gam)
