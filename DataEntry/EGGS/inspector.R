@@ -39,7 +39,7 @@ list(
   v <- data.table(
     variable = names(z),
     set = c(
-      list( c('N', 'F', 'H')  ), # location
+      list( c('F', 'L')  ), # location
       list( c('normal','star','crack','hatched','fertile','broken','dead_embryo','killed')  ), # state
       list( c('in_incubator', 'in_hatcher', 'out_hatcher', 'tissue', 'blood', 'delivered')  ) # action
     )
