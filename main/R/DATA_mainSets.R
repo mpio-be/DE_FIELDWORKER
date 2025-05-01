@@ -161,3 +161,23 @@ NESTS <- function(DB = db, .refdate = input$refdate) {
 
     o
 }
+
+
+CHICKS <- function(DB = db, .refdate = input$refdate) {
+  
+  if(! exists('input', envir = .GlobalEnv)) {
+    .refdate = as.character(Sys.Date())
+    warning('input not found, using ', Sys.Date()|>dQuote(), ' as reference.')
+    }
+
+  # data
+    x = DBq(glue("SELECT *  FROM CHICKS WHERE date <= {shQuote(.refdate)}"), .db = DB)
+    x[, date := lubridate::ymd_hms(paste(date, caught))]
+    x[, pk := NULL]
+    x = unique(x)
+
+    setorder(x, nest, date)
+
+    x
+
+}

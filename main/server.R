@@ -274,7 +274,39 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
         theme_minimal(base_size = 14)
 
-        g1 + g2 + g3
+      # hatching
+        nn = NESTS(.refdate = input$refdate)
+        pp = nn[, .(nest, date = as.Date(min_pred_hatch_date), hatching = "predicted")]
+     
+        oo = CHICKS(.refdate = input$refdate)[, date := as.Date(date)]
+        oo = oo[, .(date = min(as.Date(date))), by = nest][, hatching := "observed"]
+
+        O = rbind(pp, oo)
+
+
+        g4 =
+          ggplot(O, aes(x = date, fill = hatching)) +
+          geom_histogram(binwidth = 1, position = "dodge") +
+          geom_vline(xintercept = as.Date(input$refdate), col = "#001346", linewidth = 1) +
+          ggtitle(glue(
+            "Hatching: {nrow(oo)} nests hatched;{nrow(nn[nest_state%in% c('I', 'F', 'C')])} nests expected to hatch.")) +
+          xlab("") +
+          ylab("") +
+          scale_x_date(date_labels = "%b %d", date_breaks = "2 day") +
+          scale_fill_manual(values = c("#e76b05", "#03c9bf91")) +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14)) +
+          theme_bw() +
+          theme(
+            axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
+            legend.position = "inside",
+            legend.position.inside = c(1, 1),
+            legend.justification = c("right", "top"),
+            legend.background = element_rect(fill = alpha("white", 0.7), color = NA)
+          )
+
+
+
+        (g1 + g4) / (g2 + g3)
 
   })
 
