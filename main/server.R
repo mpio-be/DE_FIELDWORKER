@@ -42,8 +42,8 @@ shinyServer(function(input, output, session) {
   # ENTER DATA
   output$new_data <- renderUI({
     startApp(
-        hrefs = glue('../DataEntry/{getOption("dbtabs_entry")}/'),
-        labels = paste(icon("pencil"), getOption("dbtabs_entry"))
+        hrefs = glue('../DataEntry/{dbtabs_entry}/'),
+        labels = paste(icon("pencil"), dbtabs_entry)
     )
   })
   
