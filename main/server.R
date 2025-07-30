@@ -39,27 +39,26 @@ shinyServer(function(input, output, session) {
     dfsys_output()
   })
   
-# ENTER DATA UI
+  # ENTER DATA
   output$new_data <- renderUI({
-    startApp(app_nam, "DataEntry", dbtabs_entry,
-      host = session$clientData$url_hostname,
-      labels = paste(icon("pencil"), dbtabs_entry)
+    startApp(
+        hrefs = glue('../DataEntry/{getOption("dbtabs_entry")}/'),
+        labels = paste(icon("pencil"), getOption("dbtabs_entry"))
     )
   })
   
-# GPS UI
+# GPS
   output$open_gps <- renderUI({
-    startApp(app_nam, "gpxui",
-      host = session$clientData$url_hostname,
+    startApp(
+      hrefs  = "../gpxui/" ,
       labels = p(icon("location-crosshairs"), "GPS upload/download")
-    )
+    ) 
   })
   
-# DB interface UI
+  #* Database Interface
   output$open_db <- renderUI({
-    startApp("db_ui", "field_db.php",
-      isShiny = FALSE,
-      host = session$clientData$url_hostname,
+    startApp(
+      hrefs = "../../../db_ui/field_db.php",
       labels = p(icon("database"), "Database interface")
     )
   })
