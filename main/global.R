@@ -46,7 +46,7 @@ SERVER = "de_fieldworker" # dbo::my.cnf()
   dbbasenam = 'NOLAatDUMMERSEE'
   years     = c(2024, 2025)
 
-  app_nam              = "DE_FIELDWORKER"
+  app_nam     = "DE_FIELDWORKER"
   dbtabs_entry =
     c("AUTHORS", "CAPTURES", "RESIGHTINGS", "CHICKS", "NESTS", "EGGS", "SAMPLES", "todo_white_list")
   dbtabs_view =
